@@ -18,5 +18,8 @@ namespace MyPharmacy.Controllers
 
         [HttpGet]
         public ActionResult GetAll()
+        {
+            return null;
+        }
     }
 }
