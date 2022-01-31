@@ -12,7 +12,7 @@ namespace MyPharmacy.Entities
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
-        public DbSet<DrugCategory> DrugCategories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
