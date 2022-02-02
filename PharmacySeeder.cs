@@ -152,8 +152,62 @@ namespace MyPharmacy
                             Price = 20
                         }
                     }
-                }
+                },
+
+            new Pharmacy()
+            {
+                Name = "Pod Slowikiem",
+                ContactEmail = "poslowikiem@wp.pl",
+                ContactNumber = "777777777",
+                Address = new Address()
+                {
+                    City = "Szczecin",
+                    Street = "Wolna 4",
+                    PostalCode = "50-101"
+                },
+                HasPresciptionDrugs = true,
+                Drugs = new List<Drug>()
+                    {
+                        new Drug()
+                        {
+                            DrugsName = "Noopeptil",
+                            SubstancesName = "Noopept",
+                            NumberOfTablets = 10,
+                            MilligramsPerTablets = 10,
+                            AmountOfPackages = 3,
+                            DrugCategory = "Nootropic",
+                            LumpSumDrug = false,
+                            PrescriptionRequired = false,
+                            Price = 13
+                        },
+                        new Drug()
+                        {
+                            DrugsName = "Relanium",
+                            SubstancesName = "Diazepam",
+                            NumberOfTablets = 30,
+                            MilligramsPerTablets = 1,
+                            AmountOfPackages = 4,
+                            DrugCategory = "Anxiolytic",
+                            LumpSumDrug = true,
+                            PrescriptionRequired = true,
+                            Price = 15
+                        },
+                        new Drug()
+                        {
+                            DrugsName = "Morfeo",
+                            SubstancesName = "Zaleplon",
+                            NumberOfTablets = 20,
+                            MilligramsPerTablets = 10,
+                            AmountOfPackages = 7,
+                            DrugCategory = "Hypnotic",
+                            LumpSumDrug = false,
+                            PrescriptionRequired = true,
+                            Price = 20
+                        }
+                    }
+            }
             };
+
             return pharmacies;
         }
 

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Services;
+using AutoMapper;
 
 namespace MyPharmacy
 {
@@ -30,7 +31,10 @@ namespace MyPharmacy
 
             services.AddControllers();
             services.AddDbContext<PharmacyDbContext>();
+            services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDrugService, DrugService>();
+            services.AddScoped<IPharmacyService, PharmacyService>();
+
             services.AddScoped<PharmacySeeder>();
         }
 
