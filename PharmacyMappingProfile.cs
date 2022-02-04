@@ -12,10 +12,19 @@ namespace MyPharmacy
     {
         public PharmacyMappingProfile()
         {
+            //mapuje z --> do
             CreateMap<Pharmacy, PharmacyDto>()
                 .ForMember(p => p.City, pd => pd.MapFrom(g => g.Address.City))
-                .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street));
+                .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street))
+                .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
 
+            CreateMap<PharmacyDto, Pharmacy>();
+
+            CreateMap<CreatePharmacyDto, Pharmacy>()
+                .ForMember(p => p.Address, pd => pd.MapFrom(dto => new Address() { City = dto.City, Street = dto.Street, PostalCode = dto.PostalCode }));
+
+            CreateMap<UpdatePharmacyDto, Pharmacy>()
+                .ForMember(p => p.Address, pd => pd.MapFrom(dto => new Address() { City = dto.City, Street = dto.Street, PostalCode = dto.PostalCode }));
 
         }
     }
