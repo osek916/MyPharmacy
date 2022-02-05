@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Services;
 using AutoMapper;
+using MyPharmacy.Middleware;
 
 namespace MyPharmacy
 {
@@ -34,7 +35,7 @@ namespace MyPharmacy
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
-
+            services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
         }
@@ -47,7 +48,7 @@ namespace MyPharmacy
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseSwagger();
             //Dodawanie interfejsu

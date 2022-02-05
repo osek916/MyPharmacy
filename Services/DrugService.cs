@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
 using MyPharmacy.Models;
@@ -27,11 +28,13 @@ namespace MyPharmacy.Services
     {
         private readonly PharmacyDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public DrugService(PharmacyDbContext context, IMapper mapper)
+        public DrugService(PharmacyDbContext context, IMapper mapper, ILogger<DrugService> logger)
         {
             _dbContext = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto)

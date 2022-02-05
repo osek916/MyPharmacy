@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
 using MyPharmacy.Models;
@@ -23,11 +24,13 @@ namespace MyPharmacy.Services
     {
         private readonly PharmacyDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public PharmacyService(PharmacyDbContext dbContext, IMapper mapper)
+        public PharmacyService(PharmacyDbContext dbContext, IMapper mapper, ILogger<PharmacyService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         
@@ -38,6 +41,7 @@ namespace MyPharmacy.Services
                 .FirstOrDefault(p => p.Id == id);
             if(pharmacy is null)
             {
+                //_logger.LogWarning
                 throw new NotFoundException($"Pharmacy with id: {id} not Found");
             }
             _dbContext.Pharmacies.Remove(pharmacy);
