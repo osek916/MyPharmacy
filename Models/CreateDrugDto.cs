@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Entities
+namespace MyPharmacy.Models
 {
-    public class Drug
+    public class CreateDrugDto
     {
-        public int Id { get; set; }
+        [Required]
         public string DrugsName { get; set; }
         public string SubstancesName { get; set; }
         public int NumberOfTablets { get; set; }
@@ -17,10 +18,8 @@ namespace MyPharmacy.Entities
         public decimal Price { get; set; }
         public bool LumpSumDrug { get; set; } //lek na ryczałt
         public bool PrescriptionRequired { get; set; }
+
+        //dodane
         public int PharmacyId { get; set; }
-        public virtual Pharmacy Pharmacy { get; set; }
-
-
-
     }
 }

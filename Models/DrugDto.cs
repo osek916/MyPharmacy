@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Entities
+namespace MyPharmacy.Models
 {
-    public class Drug
+    public class DrugDto
     {
         public int Id { get; set; }
         public string DrugsName { get; set; }
@@ -17,10 +17,5 @@ namespace MyPharmacy.Entities
         public decimal Price { get; set; }
         public bool LumpSumDrug { get; set; } //lek na ryczałt
         public bool PrescriptionRequired { get; set; }
-        public int PharmacyId { get; set; }
-        public virtual Pharmacy Pharmacy { get; set; }
-
-
-
     }
 }

@@ -36,6 +36,7 @@ namespace MyPharmacy
             services.AddScoped<IPharmacyService, PharmacyService>();
 
             services.AddScoped<PharmacySeeder>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +49,12 @@ namespace MyPharmacy
             }
 
             app.UseHttpsRedirection();
+            app.UseSwagger();
+            //Dodawanie interfejsu
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPharmacy API");
+            }); // https://localhost:5001/swagger/index.html
 
             app.UseRouting();
 

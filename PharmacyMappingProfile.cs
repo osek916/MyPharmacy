@@ -26,6 +26,11 @@ namespace MyPharmacy
             CreateMap<UpdatePharmacyDto, Pharmacy>()
                 .ForMember(p => p.Address, pd => pd.MapFrom(dto => new Address() { City = dto.City, Street = dto.Street, PostalCode = dto.PostalCode }));
 
+            CreateMap<DrugDto, Drug>();
+            CreateMap<Drug, DrugDto>();
+            CreateMap<CreateDrugDto, Drug>();
+            CreateMap<Drug, UpdateDrugDto>();
+
         }
     }
 }
