@@ -36,6 +36,7 @@ namespace MyPharmacy.Services
         
         public void Delete(int id)
         {
+            _logger.LogWarning($"Attempt to remove pharmacy id: {id}");
             var pharmacy = _dbContext
                 .Pharmacies
                 .FirstOrDefault(p => p.Id == id);

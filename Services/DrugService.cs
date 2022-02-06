@@ -100,6 +100,7 @@ namespace MyPharmacy.Services
 
         public void DeletedById(int pharmacyId, int drugId)
         {
+            _logger.LogWarning($"Attempt to remove drug id: {drugId} from the pharmacy with id: {pharmacyId}");
             var pharmacy = GetPharmacyById(pharmacyId);
             var drug = _dbContext
                 .Drugs
@@ -114,6 +115,7 @@ namespace MyPharmacy.Services
 
         public void DeletedAllDrugsPharmacyWithId(int pharmacyId)
         {
+            _logger.LogWarning($"Attempt to remove all drugs from the pharmacy with id: {pharmacyId}");
             var pharmacy = GetPharmacyById(pharmacyId);
             var drugs = _dbContext.Drugs;
             if(drugs is null)

@@ -19,6 +19,13 @@ namespace MyPharmacy.Controllers
             _pharmacyService = pharmacyService;
         }
 
+        [HttpDelete("{id}")]
+        public ActionResult DeleteById([FromRoute] int id)
+        {
+            _pharmacyService.Delete(id);
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdatePharmacyDto dto, [FromRoute] int id )
         {
