@@ -12,10 +12,19 @@ namespace MyPharmacy.Entities
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired();
+
+            modelBuilder.Entity<Role>()
+                .Property(u => u.Name)
+                .IsRequired();
+             
             modelBuilder.Entity<Pharmacy>()
                 .Property(p => p.Name)
                 .IsRequired();
@@ -27,7 +36,7 @@ namespace MyPharmacy.Entities
             modelBuilder.Entity<Address>()
                 .Property(a1 => a1.City)
                 .IsRequired()
-                .HasMaxLength(30);
+                .HasMaxLength(30); 
 
             modelBuilder.Entity<Address>()
                 .Property(a2 => a2.Street)

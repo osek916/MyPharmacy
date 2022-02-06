@@ -35,6 +35,7 @@ namespace MyPharmacy
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
