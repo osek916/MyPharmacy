@@ -18,6 +18,7 @@ namespace MyPharmacy.Services
         int Create(CreatePharmacyDto dto);
         void Update(UpdatePharmacyDto dto, int id);
         void Delete(int id);
+        IEnumerable<DrugDto> GetAllByNameOfSubstance(string nameOfSubstance);
     }
 
     public class PharmacyService : IPharmacyService
@@ -33,7 +34,16 @@ namespace MyPharmacy.Services
             _logger = logger;
         }
 
-        
+        public IEnumerable<DrugDto> GetAllByNameOfSubstance(string nameOfSubstance)
+        {
+            var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance);
+            if(drugs.Count() == 0)
+            {
+                throw new NotFoundException($"Drugs with name of substances: {nameOfSubstance} not exist");
+            }
+            var drugsDto = _mapper.Map<List<DrugDto>>(drugs);
+            return drugsDto;
+        }
         public void Delete(int id)
         {
             _logger.LogWarning($"Attempt to remove pharmacy id: {id}");

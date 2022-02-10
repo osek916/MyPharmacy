@@ -19,6 +19,13 @@ namespace MyPharmacy.Controllers
             _pharmacyService = pharmacyService;
         }
 
+        [HttpGet("drugs/{nameOfSubstance}")]
+        public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]string nameOfSubstance)
+        {
+            var drugsDto = _pharmacyService.GetAllByNameOfSubstance(nameOfSubstance);
+            return Ok(drugsDto);
+        }
+
         [HttpDelete("{id}")]
         public ActionResult DeleteById([FromRoute] int id)
         {

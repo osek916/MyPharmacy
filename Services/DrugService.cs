@@ -21,6 +21,7 @@ namespace MyPharmacy.Services
         void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto);
         
         IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
+        IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug);
 
     }
 
@@ -130,8 +131,8 @@ namespace MyPharmacy.Services
         public IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance)
         {
             var pharmacy = GetPharmacyById(pharmacyId);
-            
-            var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance);
+
+            var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance && d.PharmacyId == pharmacyId);  
             if(drugs.Count() == 0)
             {
                 throw new NotFoundException($"Drugs with this substances: {nameOfSubstance} not found in this Pharmacy");
@@ -140,6 +141,19 @@ namespace MyPharmacy.Services
             return drugDtos;
         }
         
+        public IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug)
+        {
+            var pharmacy = GetPharmacyById(pharmacyId);
+            var drugs = _dbContext.Drugs.Where(d => d.PharmacyId == pharmacyId && d.DrugsName == nameOfDrug);
+            if (drugs.Count() == 0)
+            {
+                throw new NotFoundException($"Drugs with this substances: {nameOfDrug} not found in this Pharmacy");
+            }
+            var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
+            return drugDtos;
+        }
+
+
 
         private Pharmacy GetPharmacyById(int pharmacyId)
         {
