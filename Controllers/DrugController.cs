@@ -48,12 +48,12 @@ namespace MyPharmacy.Controllers
         }
 
         
-        /*[HttpGet("{nameOfSubstance}")]
+        [HttpGet("substance/{nameOfSubstance}")]
         public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]int pharmacyId, [FromRoute]string nameOfSubstance)
         {
             var drugsDto = _drugService.GetAllByNameOfSubstance(pharmacyId, nameOfSubstance);
             return Ok(drugsDto);
-        }*/
+        }
 
         [HttpGet("{drugId}")]
         public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)

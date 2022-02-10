@@ -20,7 +20,7 @@ namespace MyPharmacy.Services
         void DeletedAllDrugsPharmacyWithId(int pharmacyId); 
         void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto);
         
-        //IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
+        IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
 
     }
 
@@ -126,19 +126,20 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
 
-        /*
+        
         public IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance)
         {
             var pharmacy = GetPharmacyById(pharmacyId);
             
             var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance);
-            if(drugs is null)
+            if(drugs.Count() == 0)
             {
                 throw new NotFoundException($"Drugs with this substances: {nameOfSubstance} not found in this Pharmacy");
             }
             var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
             return drugDtos;
-        }*/
+        }
+        
 
         private Pharmacy GetPharmacyById(int pharmacyId)
         {

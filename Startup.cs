@@ -14,6 +14,13 @@ using MyPharmacy.Entities;
 using MyPharmacy.Services;
 using AutoMapper;
 using MyPharmacy.Middleware;
+using Microsoft.AspNetCore.Identity;
+using FluentValidation;
+using MyPharmacy.Models;
+using MyPharmacy.Models.Validators;
+using FluentValidation.AspNetCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MyPharmacy
 {
@@ -29,14 +36,36 @@ namespace MyPharmacy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var authenticationSettings = new AuthenticationSettings();
+            Configuration.GetSection("Authentication").Bind(authenticationSettings); //binduje z appsetting.json do powy¿szego obiektu
 
-            services.AddControllers();
+            services.AddSingleton(authenticationSettings);
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = "Bearer";
+                option.DefaultScheme = "Bearer";
+                option.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(cfg =>
+            {
+                cfg.RequireHttpsMetadata = false; //nie wymuszamy tylko protoko³u HTTPS
+                cfg.SaveToken = true;             //zapisuje token po stronie serwera
+                cfg.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = authenticationSettings.JwtIssuer,
+                    ValidAudience = authenticationSettings.JwtIssuer, //jakie podmioty mog¹ u¿ywaæ tego tokenu. Generujemy je tylko w obrêbie tej aplikacji 
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) //klucz prywatny wygenerowany na podstawie klucza z appsetting.json
+                };
+            });
+
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<PharmacyDbContext>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
         }
@@ -50,6 +79,7 @@ namespace MyPharmacy
                 app.UseDeveloperExceptionPage();
             }
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseSwagger();
             //Dodawanie interfejsu

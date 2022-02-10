@@ -27,6 +27,12 @@ namespace MyPharmacy.Middleware
                 await context.Response.WriteAsync(notFoundException.Message);
                 _logger.LogError(notFoundException.Message);
             }
+            catch(BadRequestException badRequestException)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(badRequestException.Message);
+                _logger.LogError(badRequestException.Message);
+            }
             catch(Exception e)
             {
                 _logger.LogError(e, e.Message);
