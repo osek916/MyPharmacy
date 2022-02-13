@@ -12,5 +12,6 @@ namespace MyPharmacy.Entities
         public string Street { get; set; }
         public string PostalCode { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
+        public virtual OrderByClient OrderByClient { get; set; }
     }
 }

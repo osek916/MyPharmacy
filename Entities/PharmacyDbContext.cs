@@ -14,9 +14,20 @@ namespace MyPharmacy.Entities
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<OrderByClient> OrderByClients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Status>()
+                .Property(s => s.Name)
+                .IsRequired();
+         
+
+            modelBuilder.Entity<OrderByClient>()
+                .Property(o => o.IsPersonalPickup)
+                .IsRequired();
+
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .IsRequired();

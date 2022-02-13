@@ -34,12 +34,32 @@ namespace MyPharmacy
                     _dbContext.Pharmacies.AddRange(pharmacies);
                     _dbContext.SaveChanges();
                 }
+
+                //if(!_dbContext.Status())
                 
             }
 
         }
 
-       
+        private IEnumerable<Status> GetStatuses()
+        {
+            var statuses = new List<Status>()
+            {
+                new Status()
+                {
+                    Name = "delivered"
+                },
+                new Status()
+                {
+                    Name = "during"
+                },
+                new Status()
+                {
+                    Name = "failed"
+                }
+            };
+            return statuses;
+        }
         private IEnumerable<Role> GetRoles()
         {
             var roles = new List<Role>()
@@ -47,6 +67,10 @@ namespace MyPharmacy
                 new Role()
                 {
                     Name = "User"
+                },
+                new Role()
+                {
+                    Name = "Pharmacist"
                 },
                 new Role()
                 {

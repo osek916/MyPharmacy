@@ -19,7 +19,7 @@ namespace MyPharmacy.Entities
         public bool PrescriptionRequired { get; set; }
         public int PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
-
+        public ICollection<OrderByClient> OrderByClient { get; set; }
 
 
     }
