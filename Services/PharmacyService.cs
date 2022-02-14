@@ -35,7 +35,7 @@ namespace MyPharmacy.Services
             _mapper = mapper;
             _logger = logger;
         }
-        
+
         /*public IEnumerable<DrugDto> GetAllByCategory(DrugQuery query)
         {
             
@@ -76,9 +76,20 @@ namespace MyPharmacy.Services
                 
         }
         */
-        
 
-        
+        public IEnumerable<PharmacyDto> GetAll( )
+        {
+
+            var pharmacies = _dbContext
+                .Pharmacies
+                .Include(x => x.Address)
+                .ToList();
+
+            var pharmaciesDto = _mapper.Map<List<PharmacyDto>>(pharmacies);
+            return pharmaciesDto;
+
+        }
+
         public IEnumerable<DrugDto> GetAllByNameOfSubstance(string nameOfSubstance)
         {
             
@@ -167,19 +178,7 @@ namespace MyPharmacy.Services
           
         }
 
-        public IEnumerable<PharmacyDto> GetAll()
-        {
-            
-            var pharmacies = _dbContext
-                .Pharmacies
-                .Include(x => x.Address)
-                .Include(x => x.Drugs)
-                .ToList();
-
-            var pharmaciesDto = _mapper.Map<List<PharmacyDto>>(pharmacies);
-            return pharmaciesDto;
-            
-        }
+        
         
     }
 

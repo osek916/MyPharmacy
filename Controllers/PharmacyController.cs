@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyPharmacy.Entities;
 using MyPharmacy.Models;
 using MyPharmacy.Services;
 using System;
@@ -50,6 +51,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
+        //ADMIN
         [HttpPost]
         public ActionResult CreatePharmacy([FromBody] CreatePharmacyDto dto)
         {
@@ -58,9 +60,9 @@ namespace MyPharmacy.Controllers
             return Created($"api/pharmacy/{id}", null);
         }
 
-
+        //ADMIN
         [HttpGet]
-        public ActionResult<IEnumerable<PharmacyDto>> GetAll()
+        public ActionResult<IEnumerable<Pharmacy>> GetAll()
         {
             var pharmaciesDtos = _pharmacyService.GetAll();
             return Ok(pharmaciesDtos);

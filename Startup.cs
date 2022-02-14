@@ -62,6 +62,7 @@ namespace MyPharmacy
             services.AddAutoMapper(this.GetType().Assembly);
             //services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
+            services.AddScoped<ISearchEngineService, SearchEngineService>();
             //services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

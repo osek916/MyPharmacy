@@ -33,6 +33,12 @@ namespace MyPharmacy
             CreateMap<CreateDrugDto, Drug>();
             CreateMap<Drug, UpdateDrugDto>();
 
+
+            CreateMap<Pharmacy, SearchEnginePharmacyDto>()
+                .ForMember(p => p.City, pd => pd.MapFrom(g => g.Address.City))
+                .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street))
+                .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
+
         }
     }
 }
