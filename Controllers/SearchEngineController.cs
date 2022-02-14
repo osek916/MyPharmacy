@@ -41,7 +41,11 @@ namespace MyPharmacy.Controllers
          
         
         [HttpGet("drug")]
-        public ActionResult<PagedResult<SearchEngineDrugDto>> GetPharmaciesWithDrug([FromQuery] SearchEngine)
+        public ActionResult<PagedResult<SearchEngineDrugDto>> GetPharmaciesWithDrug([FromQuery] SearchEngineDrugQuery query)
+        {
+            var searchEngineDrugDtos = _searchEngineService.GetPharmaciesWithDrugs(query);
+            return Ok(searchEngineDrugDtos);
+        }
           
 
     }

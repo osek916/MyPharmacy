@@ -40,7 +40,21 @@ namespace MyPharmacy
                 .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
 
             CreateMap<DrugInformation, SearchEngineDrugInformationDto>()
-                .ForMember(d => d.DrugCategories, dd => dd.MapFrom(g => g.DrugCategories));
+                .ForMember(d => d.DrugCategories, dd => dd.MapFrom(g => g.DrugCategories))
+                .ForMember(d => d.Description, dd => dd.MapFrom(g => g.Description));
+
+            CreateMap<Pharmacy, SearchEngineDrugDto>();
+            CreateMap<Drug, SearchEngineDrugDto>()
+                .ForMember(d => d.City, dd => dd.MapFrom(g => g.Pharmacy.Address.City))
+                .ForMember(d => d.Street, dd => dd.MapFrom(g => g.Pharmacy.Address.Street))
+                .ForMember(d => d.PostalCode, dd => dd.MapFrom(g => g.Pharmacy.Address.PostalCode))
+                .ForMember(d => d.SubstancesName, dd => dd.MapFrom(g => g.DrugInformation.SubstancesName))
+                .ForMember(d => d.DrugsName, dd => dd.MapFrom(g => g.DrugInformation.DrugsName))
+                .ForMember(d => d.LumpSumDrug, dd => dd.MapFrom(g => g.DrugInformation.LumpSumDrug))
+                .ForMember(d => d.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired))
+                .ForMember(d => d.MilligramsPerTablets, dd => dd.MapFrom(g => g.DrugInformation.MilligramsPerTablets))
+                .ForMember(d => d.NumberOfTablets, dd => dd.MapFrom(g => g.DrugInformation.NumberOfTablets));
+
 
         }
     }
