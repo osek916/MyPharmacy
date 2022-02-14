@@ -19,6 +19,7 @@ namespace MyPharmacy.Models.Validators
 
             RuleFor(u => u.ConfirmPassword).Equal(p => p.Password);
 
+            /*
             //unikalność w bazie danych
             RuleFor(u => u.Email)
                 .Custom((value, context) =>
@@ -29,6 +30,7 @@ namespace MyPharmacy.Models.Validators
                         context.AddFailure("Email", "That email is taken");
                     }
                 });
+            */
         }
     }
 }

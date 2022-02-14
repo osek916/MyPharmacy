@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Models
+namespace MyPharmacy.Entities
 {
-    public class DrugDto
+    public class DrugInformation
     {
+        public int Id { get; set; }
         public string DrugsName { get; set; }
         public string SubstancesName { get; set; }
+        public string Description { get; set; }
         public int NumberOfTablets { get; set; }
         public int MilligramsPerTablets { get; set; }
-        public string DrugCategory { get; set; }
-        public int AmountOfPackages { get; set; }
-        public decimal Price { get; set; }
         public bool LumpSumDrug { get; set; } //lek na ryczałt
         public bool PrescriptionRequired { get; set; }
-        public int PharmacyId { get; set; }
+        public virtual List<Drug> Drugs { get; set; }
+        public virtual List<DrugCategory> DrugCategories { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace MyPharmacy.Services
         void RegisterUser(UserRegisterDto dto);
         string GenerateJwt(LoginDto dto);
     }
-    public class AccountService : IAccountService
+    public class AccountService //: IAccountService
     {
         private readonly PharmacyDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
@@ -30,7 +30,8 @@ namespace MyPharmacy.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
         }
-
+        
+        
         public string GenerateJwt(LoginDto dto)
         {
             var user = _dbContext.Users
@@ -88,6 +89,6 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
 
-
+        
     }
 }

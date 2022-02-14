@@ -8,19 +8,14 @@ namespace MyPharmacy.Entities
     public class Drug
     {
         public int Id { get; set; }
-        public string DrugsName { get; set; }
-        public string SubstancesName { get; set; }
-        public int NumberOfTablets { get; set; }
-        public int MilligramsPerTablets { get; set; }
-        public string DrugCategory { get; set; }
         public int AmountOfPackages { get; set; }
         public decimal Price { get; set; }
-        public bool LumpSumDrug { get; set; } //lek na ryczałt
-        public bool PrescriptionRequired { get; set; }
+
+        public int? DrugInformationId { get; set; }
+        public virtual DrugInformation DrugInformation { get; set; }
         public int PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
-        public ICollection<OrderByClient> OrderByClient { get; set; }
-
+        public List<OrderByClient> OrderByClients { get; set; }
 
     }
 }

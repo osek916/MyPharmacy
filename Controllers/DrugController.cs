@@ -46,7 +46,14 @@ namespace MyPharmacy.Controllers
             var drugsDto = _drugService.GetAll(pharmacyId);
             return Ok(drugsDto);
         }
-
+        
+        /*
+        [HttpGet]
+        public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromRoute]int pharmacyId, [FromQuery] DrugQuery query)
+        {
+            var drugsDto = _drugService.GetAllByCategory(pharmacyId, query);
+            return Ok(drugsDto);
+        }
         
         [HttpGet("substance/{nameOfSubstance}")]
         public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]int pharmacyId, [FromRoute]string nameOfSubstance)
@@ -61,7 +68,7 @@ namespace MyPharmacy.Controllers
             var drugsDto = _drugService.GetAllByNameOfDrug(pharmacyId, nameOfDrug);
             return Ok(drugsDto);
         }
-
+        */
         [HttpGet("{drugId}")]
         public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
         {

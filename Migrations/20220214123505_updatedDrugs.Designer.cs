@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPharmacy.Entities;
 
 namespace MyPharmacy.Migrations
 {
     [DbContext(typeof(PharmacyDbContext))]
-    partial class PharmacyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220214123505_updatedDrugs")]
+    partial class updatedDrugs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
-
-            modelBuilder.Entity("DrugCategoryDrugInformation", b =>
-                {
-                    b.Property<int>("DrugCategoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DrugInformationsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DrugCategoriesId", "DrugInformationsId");
-
-                    b.HasIndex("DrugInformationsId");
-
-                    b.ToTable("DrugCategoryDrugInformation");
-                });
 
             modelBuilder.Entity("DrugOrderByClient", b =>
                 {
@@ -101,25 +88,6 @@ namespace MyPharmacy.Migrations
                     b.ToTable("Drugs");
                 });
 
-            modelBuilder.Entity("MyPharmacy.Entities.DrugCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DrugCategories");
-                });
-
             modelBuilder.Entity("MyPharmacy.Entities.DrugInformation", b =>
                 {
                     b.Property<int>("Id")
@@ -128,6 +96,9 @@ namespace MyPharmacy.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DrugCategory")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DrugsName")
@@ -296,21 +267,6 @@ namespace MyPharmacy.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("DrugCategoryDrugInformation", b =>
-                {
-                    b.HasOne("MyPharmacy.Entities.DrugCategory", null)
-                        .WithMany()
-                        .HasForeignKey("DrugCategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyPharmacy.Entities.DrugInformation", null)
-                        .WithMany()
-                        .HasForeignKey("DrugInformationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DrugOrderByClient", b =>

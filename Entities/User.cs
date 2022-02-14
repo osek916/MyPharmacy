@@ -19,7 +19,7 @@ namespace MyPharmacy.Entities
         public virtual Role Role { get; set; }
 
         public int? PharmacyId { get; set; }
-        public Pharmacy Pharmacy { get; set; }
-        public ICollection<OrderByClient> OrdersByClient { get; set; }
+        public virtual Pharmacy Pharmacy { get; set; }
+        public List<OrderByClient> OrdersByClient { get; set; }
     }
 }

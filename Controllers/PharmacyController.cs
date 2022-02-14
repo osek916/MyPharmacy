@@ -19,6 +19,15 @@ namespace MyPharmacy.Controllers
             _pharmacyService = pharmacyService;
         }
 
+        [HttpGet]
+        public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromQuery] DrugQuery query)
+        {
+            //var drugsDto = _pharmacyService.GetAllByCategory(query);
+            //return Ok(drugsDto);
+
+            return Ok();
+        }
+
         [HttpGet("drugs/{nameOfSubstance}")]
         public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]string nameOfSubstance)
         {
@@ -48,6 +57,7 @@ namespace MyPharmacy.Controllers
 
             return Created($"api/pharmacy/{id}", null);
         }
+
 
         [HttpGet]
         public ActionResult<IEnumerable<PharmacyDto>> GetAll()

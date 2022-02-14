@@ -20,6 +20,6 @@ namespace MyPharmacy.Entities
         public virtual User User { get; set; }
         public int? AddressId { get; set; }
         public virtual Address Address { get; set; } //jeżeli jest inny adres niż apteka to jest dostarczenie i zabrania się na receptę
-        public virtual ICollection<Drug> Drugs { get; set; }
+        public virtual List<Drug> Drugs { get; set; }
     }
 }

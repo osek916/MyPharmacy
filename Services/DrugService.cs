@@ -19,9 +19,11 @@ namespace MyPharmacy.Services
         void DeletedById(int pharmacyId, int drugId);
         void DeletedAllDrugsPharmacyWithId(int pharmacyId); 
         void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto);
-        
-        IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
-        IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug);
+        //IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query);
+
+
+       // IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
+       // IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug);
 
     }
 
@@ -37,7 +39,15 @@ namespace MyPharmacy.Services
             _mapper = mapper;
             _logger = logger;
         }
-
+        
+        /*
+        public IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query)
+        {
+            var temporaryQuery = _dbContext
+                .Drugs
+            var drugs = _dbContext.
+        
+        */
         public void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto)
         {
             var pharmacy = GetPharmacyById(pharmacyId);
@@ -49,15 +59,10 @@ namespace MyPharmacy.Services
                 throw new NotFoundException($"Drug with id: {drugId} not found");
             }
 
-            drug.DrugsName = dto.DrugsName;
-            drug.DrugCategory = dto.DrugCategory;
+            
             drug.AmountOfPackages = dto.AmountOfPackages;
-            drug.LumpSumDrug = dto.LumpSumDrug;
-            drug.MilligramsPerTablets = dto.MilligramsPerTablets;
-            drug.NumberOfTablets = dto.NumberOfTablets;
-            drug.PrescriptionRequired = dto.PrescriptionRequired;
             drug.Price = dto.Price;
-            drug.SubstancesName = dto.SubstancesName;
+           
 
             _dbContext.SaveChanges();
         }
@@ -91,7 +96,7 @@ namespace MyPharmacy.Services
 
         public int Create(int pharmacyId, CreateDrugDto dto)
         {
-            var pharmacy = GetPharmacyById(pharmacyId);
+            
             var drug = _mapper.Map<Drug>(dto);
             drug.PharmacyId = pharmacyId;
             _dbContext.Drugs.Add(drug);
@@ -126,7 +131,7 @@ namespace MyPharmacy.Services
             _dbContext.RemoveRange(drugs);
             _dbContext.SaveChanges();
         }
-
+        /*
         
         public IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance)
         {
@@ -154,9 +159,10 @@ namespace MyPharmacy.Services
         }
 
 
-
+        */
         private Pharmacy GetPharmacyById(int pharmacyId)
         {
+            
             var pharmacy = _dbContext
                 .Pharmacies
                 .Include(p => p.Drugs)
@@ -167,6 +173,8 @@ namespace MyPharmacy.Services
                 throw new NotFoundException($"Pharmacy with id: {pharmacyId} not exist");
             }
             return pharmacy;
+
         }
+        
     }
 }

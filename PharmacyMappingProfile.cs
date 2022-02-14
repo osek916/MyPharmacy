@@ -18,6 +18,8 @@ namespace MyPharmacy
                 .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street))
                 .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
 
+           
+
             CreateMap<PharmacyDto, Pharmacy>();
 
             CreateMap<CreatePharmacyDto, Pharmacy>()

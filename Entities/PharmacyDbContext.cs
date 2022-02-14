@@ -12,36 +12,39 @@ namespace MyPharmacy.Entities
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+        
         public DbSet<Status> Statuses { get; set; }
+        public DbSet<DrugInformation> DrugInformations { get; set; }
         public DbSet<OrderByClient> OrderByClients { get; set; }
+        public DbSet<DrugCategory> DrugCategories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Status>()
                 .Property(s => s.Name)
                 .IsRequired();
-         
 
             modelBuilder.Entity<OrderByClient>()
                 .Property(o => o.IsPersonalPickup)
+                .IsRequired();
+
+            modelBuilder.Entity<Role>()
+                .Property(u => u.Name)
                 .IsRequired();
 
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .IsRequired();
 
-            modelBuilder.Entity<Role>()
-                .Property(u => u.Name)
-                .IsRequired();
-             
-            modelBuilder.Entity<Pharmacy>()
-                .Property(p => p.Name)
+            modelBuilder.Entity<DrugCategory>()
+                .Property(u => u.CategoryName)
                 .IsRequired();
 
-            modelBuilder.Entity<Drug>()
-                .Property(d => d.DrugsName)
+            modelBuilder.Entity<Pharmacy>()
+                .Property(p => p.Name)
                 .IsRequired();
 
             modelBuilder.Entity<Address>()

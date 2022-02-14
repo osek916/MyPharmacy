@@ -10,8 +10,8 @@ using MyPharmacy.Entities;
 namespace MyPharmacy.Migrations
 {
     [DbContext(typeof(PharmacyDbContext))]
-    [Migration("20220206162839_ADDUSERANDROLE")]
-    partial class ADDUSERANDROLE
+    [Migration("20220213192621_Init2")]
+    partial class Init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace MyPharmacy.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
+
+            modelBuilder.Entity("DrugOrderByClient", b =>
+                {
+                    b.Property<int>("DrugsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderByClientsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DrugsId", "OrderByClientsId");
+
+                    b.HasIndex("OrderByClientsId");
+
+                    b.ToTable("DrugOrderByClient");
+                });
 
             modelBuilder.Entity("MyPharmacy.Entities.Address", b =>
                 {
@@ -55,11 +70,36 @@ namespace MyPharmacy.Migrations
                     b.Property<int>("AmountOfPackages")
                         .HasColumnType("int");
 
+                    b.Property<int>("PharmacyId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PharmacyId");
+
+                    b.ToTable("Drugs");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.DrugInformation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DrugCategory")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DrugId")
+                        .HasColumnType("int");
+
                     b.Property<string>("DrugsName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LumpSumDrug")
@@ -71,23 +111,59 @@ namespace MyPharmacy.Migrations
                     b.Property<int>("NumberOfTablets")
                         .HasColumnType("int");
 
-                    b.Property<int>("PharmacyId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("PrescriptionRequired")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("SubstancesName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PharmacyId");
+                    b.HasIndex("DrugId")
+                        .IsUnique();
 
-                    b.ToTable("Drugs");
+                    b.ToTable("DrugInformations");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.OrderByClient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfOrder")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateOfReceipt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPersonalPickup")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrderByClients");
                 });
 
             modelBuilder.Entity("MyPharmacy.Entities.Pharmacy", b =>
@@ -137,6 +213,22 @@ namespace MyPharmacy.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("MyPharmacy.Entities.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
+                });
+
             modelBuilder.Entity("MyPharmacy.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -163,14 +255,34 @@ namespace MyPharmacy.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PharmacyId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PharmacyId");
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("DrugOrderByClient", b =>
+                {
+                    b.HasOne("MyPharmacy.Entities.Drug", null)
+                        .WithMany()
+                        .HasForeignKey("DrugsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyPharmacy.Entities.OrderByClient", null)
+                        .WithMany()
+                        .HasForeignKey("OrderByClientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyPharmacy.Entities.Drug", b =>
@@ -182,6 +294,38 @@ namespace MyPharmacy.Migrations
                         .IsRequired();
 
                     b.Navigation("Pharmacy");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.DrugInformation", b =>
+                {
+                    b.HasOne("MyPharmacy.Entities.Drug", "Drug")
+                        .WithOne("DrugInformation")
+                        .HasForeignKey("MyPharmacy.Entities.DrugInformation", "DrugId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Drug");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.OrderByClient", b =>
+                {
+                    b.HasOne("MyPharmacy.Entities.Address", "Address")
+                        .WithOne("OrderByClient")
+                        .HasForeignKey("MyPharmacy.Entities.OrderByClient", "AddressId");
+
+                    b.HasOne("MyPharmacy.Entities.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId");
+
+                    b.HasOne("MyPharmacy.Entities.User", "User")
+                        .WithMany("OrdersByClient")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyPharmacy.Entities.Pharmacy", b =>
@@ -197,23 +341,41 @@ namespace MyPharmacy.Migrations
 
             modelBuilder.Entity("MyPharmacy.Entities.User", b =>
                 {
+                    b.HasOne("MyPharmacy.Entities.Pharmacy", "Pharmacy")
+                        .WithMany()
+                        .HasForeignKey("PharmacyId");
+
                     b.HasOne("MyPharmacy.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Pharmacy");
+
                     b.Navigation("Role");
                 });
 
             modelBuilder.Entity("MyPharmacy.Entities.Address", b =>
                 {
+                    b.Navigation("OrderByClient");
+
                     b.Navigation("Pharmacy");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.Drug", b =>
+                {
+                    b.Navigation("DrugInformation");
                 });
 
             modelBuilder.Entity("MyPharmacy.Entities.Pharmacy", b =>
                 {
                     b.Navigation("Drugs");
+                });
+
+            modelBuilder.Entity("MyPharmacy.Entities.User", b =>
+                {
+                    b.Navigation("OrdersByClient");
                 });
 #pragma warning restore 612, 618
         }
