@@ -39,6 +39,9 @@ namespace MyPharmacy
                 .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street))
                 .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
 
+            CreateMap<DrugInformation, SearchEngineDrugInformationDto>()
+                .ForMember(d => d.DrugCategories, dd => dd.MapFrom(g => g.DrugCategories));
+
         }
     }
 }

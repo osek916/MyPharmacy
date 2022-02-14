@@ -14,6 +14,7 @@ namespace MyPharmacy.Services
     public interface ISearchEngineService
     {
         PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query);
+        PagedResult<SearchEngineDrugInformationDto> GetDrugInformations(SearchEngineDrugInformationQuery query);
     }
 
     public class SearchEngineService : ISearchEngineService
@@ -29,6 +30,29 @@ namespace MyPharmacy.Services
             _dbContext = dbContext;
         }
 
+        public PagedResult<SearchEngineDrugInformationDto> GetDrugInformations(SearchEngineDrugInformationQuery query)
+        {
+
+            var baseQuery = _dbContext
+                .DrugInformations
+                .Include(d => d.DrugCategories)
+                .Where(d => query.Phrase == null || (d.DrugsName.ToLower().Contains(query.Phrase.ToLower()) ||
+                d.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))).Where(d => d.PrescriptionRequired == query.PrescriptionRequired);
+
+            if (query.DrugSortBy == DrugSortBy.DrugName)
+                baseQuery.OrderBy(d => d.DrugsName);
+            else
+                baseQuery.OrderBy(d => d.SubstancesName);
+
+            var drugs = baseQuery
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize).ToList();
+            var totalItemsCount = baseQuery.Count();
+            var drugInformationDtos = _mapper.Map<List<SearchEngineDrugInformationDto>>(drugs);
+            var result = new PagedResult<SearchEngineDrugInformationDto>(drugInformationDtos, totalItemsCount, query.PageSize, query.PageNumber);
+            return result;
+
+        }
 
         public PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
         {
@@ -52,6 +76,10 @@ namespace MyPharmacy.Services
             var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
         }
+
+
+
+
 
 
     }

@@ -30,8 +30,18 @@ namespace MyPharmacy.Controllers
             return Ok(searchEnginePharmacyDtos);
         }
 
+        //Wyszukuje konkretnych informacji o leku
+        //poprawić zwracaną listę
+        [HttpGet("druginformation")]
+        public ActionResult<PagedResult<SearchEngineDrugInformationDto>> GetDrugInformations([FromQuery] SearchEngineDrugInformationQuery query)
+        {
+            var searchEngineDrugInformationDtos = _searchEngineService.GetDrugInformations(query);
+            return Ok(searchEngineDrugInformationDtos);
+        }
+         
+        
         [HttpGet("drug")]
-        public ActionResult<PagedResult<>>
+        public ActionResult<PagedResult<SearchEngineDrugDto>> GetPharmaciesWithDrug([FromQuery] SearchEngine)
           
 
     }
