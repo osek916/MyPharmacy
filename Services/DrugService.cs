@@ -18,7 +18,7 @@ namespace MyPharmacy.Services
         int Create(int pharmacyId, CreateDrugDto dto);
         void DeletedById(int pharmacyId, int drugId);
         void DeletedAllDrugsPharmacyWithId(int pharmacyId); 
-        void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto);
+        void Update(int pharmacyId,  UpdateDrugDto dto);
         //IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query);
 
 
@@ -32,14 +32,16 @@ namespace MyPharmacy.Services
         private readonly PharmacyDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IUserContextService _userContextService;
 
-        public DrugService(PharmacyDbContext context, IMapper mapper, ILogger<DrugService> logger)
+        public DrugService(PharmacyDbContext context, IMapper mapper, ILogger<DrugService> logger, IUserContextService userContextService)
         {
             _dbContext = context;
             _mapper = mapper;
             _logger = logger;
+            _userContextService = userContextService;
         }
-        
+
         /*
         public IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query)
         {
@@ -48,6 +50,109 @@ namespace MyPharmacy.Services
             var drugs = _dbContext.
         
         */
+
+        /*
+        public int Create(int pharmacyId, CreateDrugDto dto)
+        {
+            var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => dto.DrugsName.ToLower() == d.DrugsName.ToLower() && dto.MilligramsPerTablets == d.MilligramsPerTablets &&
+            dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());
+
+            if (drugInformation is null || dto.Price < 0 || dto.NumberOfTablets < 0 || dto.MilligramsPerTablets < 0)
+                throw new NotFoundException($"Drug with this information parameters not found. Chec the correctness of the entered data");
+
+            Drug newDrug = new Drug()
+            {
+                AmountOfPackages = dto.AmountOfPackages,
+                Price = dto.Price,
+                DrugInformationId = drugInformation.Id
+            };
+
+            _dbContext.Drugs.Add(newDrug);
+            _dbContext.SaveChanges();
+            return newDrug.Id;
+        }
+        */
+
+        public int Create(int pharmacyId, CreateDrugDto dto)
+        {
+            var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => dto.DrugsName.ToLower() == d.DrugsName.ToLower() && dto.MilligramsPerTablets == d.MilligramsPerTablets &&
+            dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());
+
+            if (drugInformation is null || dto.Price < 0 || dto.NumberOfTablets < 0 || dto.MilligramsPerTablets < 0)
+                throw new NotFoundException($"Drug with this information parameters not found. Chec the correctness of the entered data");
+
+            var pharmacy = GetPharmacyById(pharmacyId);
+            if(pharmacy.HasPresciptionDrugs == drugInformation.PrescriptionRequired)
+            {
+                throw new ForbiddenException($"Your pharmacy is not authorized to sell prescription drugs");
+            }
+
+            Drug newDrug = new Drug()
+            {
+                AmountOfPackages = dto.AmountOfPackages,
+                Price = dto.Price,
+                DrugInformationId = drugInformation.Id
+            };
+
+            _dbContext.Drugs.Add(newDrug);
+            _dbContext.SaveChanges();
+            return newDrug.Id;
+        }
+
+
+        public void Update(int pharmacyId, UpdateDrugDto dto)
+        {
+            _userContextService.
+            if(_userContextService.Role != "Admin" && pharmacyId != )
+
+            if (dto.OptionalId < 1)
+            {
+                throw new BadRequestException("Drug id must be greater than 0");
+            }
+
+            var pharmacy = GetPharmacyById(pharmacyId);
+            var drug = _dbContext
+                .Drugs
+                .FirstOrDefault(d => d.Id == dto.OptionalId);
+
+            if (drug is null)
+            {
+                throw new NotFoundException($"Drug with id: {dto.OptionalId} not found");
+            }
+            
+
+                drug.AmountOfPackages = dto.AmountOfPackages;
+            drug.Price = dto.Price;
+
+            _dbContext.SaveChanges();
+        }
+
+        /*
+        public void Update(int pharmacyId,  UpdateDrugDto dto)
+        {
+
+            if(dto.OptionalId < 1)
+            {
+                throw new BadRequestException("Drug id must be greater than 0");
+            }      
+            var pharmacy = GetPharmacyById(pharmacyId);
+            var drug = _dbContext
+                .Drugs
+                .FirstOrDefault(d => d.Id == dto.OptionalId);
+
+            if (drug is null)
+            {
+                throw new NotFoundException($"Drug with id: {dto.OptionalId} not found");
+            }
+            if()
+
+            drug.AmountOfPackages = dto.AmountOfPackages;
+            drug.Price = dto.Price;
+
+            _dbContext.SaveChanges();
+        }
+        */
+        /*
         public void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto)
         {
             var pharmacy = GetPharmacyById(pharmacyId);
@@ -66,6 +171,7 @@ namespace MyPharmacy.Services
 
             _dbContext.SaveChanges();
         }
+        */
 
         public List<DrugDto> GetAll(int pharmacyId)
         {
@@ -94,15 +200,7 @@ namespace MyPharmacy.Services
                 
         }
 
-        public int Create(int pharmacyId, CreateDrugDto dto)
-        {
-            
-            var drug = _mapper.Map<Drug>(dto);
-            drug.PharmacyId = pharmacyId;
-            _dbContext.Drugs.Add(drug);
-            _dbContext.SaveChanges();
-            return drug.Id;
-        }
+        
 
         public void DeletedById(int pharmacyId, int drugId)
         {

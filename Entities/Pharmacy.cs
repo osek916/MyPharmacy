@@ -12,7 +12,7 @@ namespace MyPharmacy.Entities
         public bool HasPresciptionDrugs { get; set; }
         public string ContactNumber { get; set; }
         public string ContactEmail { get; set; }
-
+        public int? CreatedByUserId { get; set; } //nowo dodane
         //leki
         public virtual List<Drug> Drugs { get; set; }
         //adres

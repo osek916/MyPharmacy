@@ -63,10 +63,12 @@ namespace MyPharmacy
             //services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddScoped<ISearchEngineService, SearchEngineService>();
-            //services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddHttpContextAccessor();//pozwala na wstrzykniêcie do konstruktora UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
         }

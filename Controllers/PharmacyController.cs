@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyPharmacy.Entities;
 using MyPharmacy.Models;
 using MyPharmacy.Services;
@@ -19,7 +20,8 @@ namespace MyPharmacy.Controllers
         {
             _pharmacyService = pharmacyService;
         }
-
+        
+        /*
         [HttpGet]
         public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromQuery] DrugQuery query)
         {
@@ -28,6 +30,7 @@ namespace MyPharmacy.Controllers
 
             return Ok();
         }
+        
 
         [HttpGet("drugs/{nameOfSubstance}")]
         public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]string nameOfSubstance)
@@ -35,40 +38,51 @@ namespace MyPharmacy.Controllers
             var drugsDto = _pharmacyService.GetAllByNameOfSubstance(nameOfSubstance);
             return Ok(drugsDto);
         }
+        */
 
-        [HttpDelete("{id}")]
-        public ActionResult DeleteById([FromRoute] int id)
+        //ADMIN
+        [HttpDelete]
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult Delete([FromQuery]int bodyId)
         {
-            _pharmacyService.Delete(id);
+            _pharmacyService.Delete(bodyId);
             return NoContent();
         }
 
-        [HttpPut("{id}")]
-        public ActionResult Update([FromBody] UpdatePharmacyDto dto, [FromRoute] int id )
+        //Manager może edytować stworzoną przez siebie aptekę
+        [HttpPut]
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult Update([FromBody] UpdatePharmacyDto dto)
         {
-             _pharmacyService.Update(dto, id);
-
+            _pharmacyService.Update(dto);
             return Ok();
         }
 
-        //ADMIN
+        
+
+        //Manager tworzy TYLKO JEDNĄ aptekę
         [HttpPost]
+        [Authorize(Roles ="Manager")]
         public ActionResult CreatePharmacy([FromBody] CreatePharmacyDto dto)
         {
             var id = _pharmacyService.Create(dto);
-
             return Created($"api/pharmacy/{id}", null);
         }
 
-        //ADMIN
+        //DO ZROBIENIA
         [HttpGet]
-        public ActionResult<IEnumerable<Pharmacy>> GetAll()
+        [Authorize(Roles = "Admin")]
+        public ActionResult<IEnumerable<PharmacyDto>> GetAll()
         {
             var pharmaciesDtos = _pharmacyService.GetAll();
             return Ok(pharmaciesDtos);
         }
 
+        //PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
+        //DO ZROBIENIA
+        //ADMIN
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<PharmacyDto> GetOne([FromRoute] int id)
         {
             var pharmacyDto = _pharmacyService.GetOne(id);
@@ -79,5 +93,7 @@ namespace MyPharmacy.Controllers
             }
             return pharmacyDto;
         }
+
+
     }
 }

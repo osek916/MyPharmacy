@@ -21,6 +21,12 @@ namespace MyPharmacy.Middleware
             {
                 await next.Invoke(context);
             }
+            catch(ForbiddenException forbiddenException)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(forbiddenException.Message);
+                _logger.LogError(forbiddenException.Message);
+            }
             catch(NotFoundException notFoundException)
             {
                 context.Response.StatusCode = 404;

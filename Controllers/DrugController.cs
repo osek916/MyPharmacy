@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyPharmacy.Models;
 using MyPharmacy.Services;
 using System;
@@ -18,13 +19,31 @@ namespace MyPharmacy.Controllers
             _drugService = drugService;
         }
 
-        
+        [HttpPost]
+        [Authorize(Roles = "Manager")]
+        public ActionResult<CreateDrugDto> Create([FromRoute] int pharmacyId, [FromBody] CreateDrugDto dto)
+        {
+            var newDrugId = _drugService.Create(pharmacyId, dto);
+            return Created($"api/pharmacy/{pharmacyId}/drug/{newDrugId}", null);
+        }
+
+
+        [HttpPut()]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult UpdateDrugById([FromRoute] int pharmacyId,  [FromBody] UpdateDrugDto dto)
+        {
+            _drugService.Update(pharmacyId,  dto);
+            return Ok();
+        }
+
+        /*
         [HttpPut("{drugId}")]
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult UpdateDrugById([FromRoute] int pharmacyId, [FromRoute]int drugId, [FromBody]UpdateDrugDto dto)
         {
             _drugService.UpdateDrugById(pharmacyId, drugId, dto);
             return Ok();
-        }
+        }*/
 
         [HttpDelete("{drugId}")]
         public ActionResult DeleteById([FromRoute]int pharmacyId, [FromRoute]int drugId)
@@ -39,6 +58,12 @@ namespace MyPharmacy.Controllers
             _drugService.DeletedAllDrugsPharmacyWithId(pharmacyId);
             return NoContent();
         }
+
+        
+
+
+
+
 
         [HttpGet]
         public ActionResult<IEnumerable<DrugDto>> GetAll([FromRoute]int pharmacyId)
@@ -76,11 +101,6 @@ namespace MyPharmacy.Controllers
             return drugDto;
         }
 
-        [HttpPost]
-        public ActionResult<CreateDrugDto> Create([FromRoute] int pharmacyId, [FromBody] CreateDrugDto dto)
-        {
-            var newDrugId = _drugService.Create(pharmacyId, dto);
-            return Created($"api/pharmacy/{pharmacyId}/drug/{newDrugId}", null);
-        }
+        
     }
 }

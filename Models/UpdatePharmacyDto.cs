@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace MyPharmacy.Models
 {
+    
     public class UpdatePharmacyDto
     {
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+        
         public bool HasPresciptionDrugs { get; set; }
+
         public string ContactNumber { get; set; }
         public string ContactEmail { get; set; }
         [MaxLength(50)]
@@ -19,5 +22,6 @@ namespace MyPharmacy.Models
         [MaxLength(50)]
         public string Street { get; set; }
         public string PostalCode { get; set; }
+        public int OptionalPharmacyId { get; set; } = 0;
     }
 }

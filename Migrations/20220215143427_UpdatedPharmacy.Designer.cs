@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPharmacy.Entities;
 
 namespace MyPharmacy.Migrations
 {
     [DbContext(typeof(PharmacyDbContext))]
-    partial class PharmacyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220215143427_UpdatedPharmacy")]
+    partial class UpdatedPharmacy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -298,6 +300,8 @@ namespace MyPharmacy.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PharmacyId");
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
@@ -384,11 +388,17 @@ namespace MyPharmacy.Migrations
 
             modelBuilder.Entity("MyPharmacy.Entities.User", b =>
                 {
+                    b.HasOne("MyPharmacy.Entities.Pharmacy", "Pharmacy")
+                        .WithMany()
+                        .HasForeignKey("PharmacyId");
+
                     b.HasOne("MyPharmacy.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Pharmacy");
 
                     b.Navigation("Role");
                 });

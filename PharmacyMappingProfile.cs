@@ -30,7 +30,8 @@ namespace MyPharmacy
 
             CreateMap<DrugDto, Drug>();
             CreateMap<Drug, DrugDto>();
-            CreateMap<CreateDrugDto, Drug>();
+
+         
             CreateMap<Drug, UpdateDrugDto>();
 
 

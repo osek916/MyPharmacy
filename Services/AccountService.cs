@@ -19,7 +19,7 @@ namespace MyPharmacy.Services
         void RegisterUser(UserRegisterDto dto);
         string GenerateJwt(LoginDto dto);
     }
-    public class AccountService //: IAccountService
+    public class AccountService : IAccountService
     {
         private readonly PharmacyDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
@@ -35,7 +35,7 @@ namespace MyPharmacy.Services
         public string GenerateJwt(LoginDto dto)
         {
             var user = _dbContext.Users
-                .Include(u => u.Role)  //ZAWSZE ZAŁĄCZAĆ JAK CHCĘ DRĄŻYĆ GŁĘBIEJ 
+                .Include(u => u.Role)  
                 .FirstOrDefault(u => u.Email == dto.Email);
 
             if(user is null)
@@ -53,9 +53,12 @@ namespace MyPharmacy.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new Claim("Gender", $"{user.Gender}"),
+                new Claim(ClaimTypes.Email, $"{user.Email}"),
                 new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
                 new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd")),
-                new Claim("Nationality", user.Nationality)
+                new Claim("PharmacyId", user.PharmacyId.Value.ToString())
+                
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
@@ -77,10 +80,14 @@ namespace MyPharmacy.Services
         {
             var user = new User()
             {
+                RoleId = dto.RoleId,
                 Email = dto.Email,
                 DateOfBirth = dto.DateOfBirth,
-                Nationality = dto.Nationality,
-                RoleId = dto.RoleId
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Gender = dto.Gender,
+                Nationality = dto.Nationality
+                
             };
             var hashedPassword = _passwordHasher.HashPassword(user, dto.Password);
 

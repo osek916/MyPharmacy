@@ -14,16 +14,16 @@ namespace MyPharmacy
         {
             _dbContext = dbContext;
         }
-        
+
         public void Seed()
         {
-            
-            
-            
+
+
+
             if (_dbContext.Database.CanConnect())
             {
-                
-                if(!_dbContext.Roles.Any())
+
+                if (!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
                     _dbContext.Roles.AddRange(roles);
@@ -36,38 +36,56 @@ namespace MyPharmacy
                     _dbContext.Statuses.AddRange(statuses);
                     _dbContext.SaveChanges();
                 }
-                
-                if(!_dbContext.DrugCategories.Any())
+
+                if (!_dbContext.DrugCategories.Any())
                 {
                     var drugCategories = GetDrugCategories();
                     _dbContext.DrugCategories.AddRange(drugCategories);
                     _dbContext.SaveChanges();
                 }
 
-                if(!_dbContext.DrugInformations.Any())
+                if (!_dbContext.DrugInformations.Any())
                 {
                     var drugInformations = GetDrugInformations();
                     _dbContext.DrugInformations.AddRange(drugInformations);
                     _dbContext.SaveChanges();
                 }
 
-                
-                
+
+
                 if (!_dbContext.Pharmacies.Any())
                 {
                     var pharmacies = GetPharmacy();
                     _dbContext.Pharmacies.AddRange(pharmacies);
                     _dbContext.SaveChanges();
                 }
-                
+
 
 
             }
-            
+
         }
 
-        
-        
+        /*
+        private IEnumerable<User> GetUsers()
+        {
+            var users = new List<User>()
+            {
+                new User()
+                {
+                    FirstName = "Kamil",
+                    LastName = "Łosiak",
+                    Email = "kamil@wp.pl",
+                    DateOfBirth = new DateTime(1992-11-12),
+                    Nationality = "Poland",
+                    RoleId = 1,
+                    
+
+                }
+            }
+        }
+        */
+
         private IEnumerable<Status> GetStatuses()
         {
             var statuses = new List<Status>()

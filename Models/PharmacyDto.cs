@@ -7,7 +7,6 @@ namespace MyPharmacy.Models
 {
     public class PharmacyDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public bool HasPresciptionDrugs { get; set; }
         public string ContactNumber { get; set; }
