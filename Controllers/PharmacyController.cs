@@ -21,24 +21,7 @@ namespace MyPharmacy.Controllers
             _pharmacyService = pharmacyService;
         }
         
-        /*
-        [HttpGet]
-        public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromQuery] DrugQuery query)
-        {
-            //var drugsDto = _pharmacyService.GetAllByCategory(query);
-            //return Ok(drugsDto);
-
-            return Ok();
-        }
-        
-
-        [HttpGet("drugs/{nameOfSubstance}")]
-        public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]string nameOfSubstance)
-        {
-            var drugsDto = _pharmacyService.GetAllByNameOfSubstance(nameOfSubstance);
-            return Ok(drugsDto);
-        }
-        */
+       
 
         //ADMIN
         [HttpDelete]
@@ -71,10 +54,10 @@ namespace MyPharmacy.Controllers
 
         //DO ZROBIENIA
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public ActionResult<IEnumerable<PharmacyDto>> GetAll()
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult<PagedResult<PharmacyDto>> GetAll([FromQuery] PharmacyGetAllQuery query)
         {
-            var pharmaciesDtos = _pharmacyService.GetAll();
+            var pharmaciesDtos = _pharmacyService.GetAll(query);
             return Ok(pharmaciesDtos);
         }
 

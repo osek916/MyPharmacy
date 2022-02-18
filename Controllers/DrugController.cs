@@ -46,32 +46,42 @@ namespace MyPharmacy.Controllers
         }*/
 
         [HttpDelete("{drugId}")]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult DeleteById([FromRoute]int pharmacyId, [FromRoute]int drugId)
         {
             _drugService.DeletedById(pharmacyId, drugId);
             return NoContent();
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult<PagedResult<DrugDto>> GetAll([FromRoute] int pharmacyId, [FromQuery] DrugGetAllQuery query)
+        {
+            var drugsDto = _drugService.GetAll(pharmacyId, query);
+            return Ok(drugsDto);
+        }
+
         [HttpDelete]
-        public ActionResult DeleteAllById([FromRoute]int pharmacyId)
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult DeleteAllByPharmacyId([FromRoute]int pharmacyId)
         {
             _drugService.DeletedAllDrugsPharmacyWithId(pharmacyId);
             return NoContent();
         }
 
-        
-
-
-
-
-
-        [HttpGet]
-        public ActionResult<IEnumerable<DrugDto>> GetAll([FromRoute]int pharmacyId)
+        [HttpGet("{drugId}")]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
         {
-            var drugsDto = _drugService.GetAll(pharmacyId);
-            return Ok(drugsDto);
+            var drugDto = _drugService.GetById(pharmacyId, drugId);
+            return drugDto;
         }
-        
+
+
+
+
+
+
         /*
         [HttpGet]
         public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromRoute]int pharmacyId, [FromQuery] DrugQuery query)
@@ -94,12 +104,7 @@ namespace MyPharmacy.Controllers
             return Ok(drugsDto);
         }
         */
-        [HttpGet("{drugId}")]
-        public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
-        {
-            var drugDto = _drugService.GetById(pharmacyId, drugId);
-            return drugDto;
-        }
+       
 
         
     }

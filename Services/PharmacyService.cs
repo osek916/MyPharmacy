@@ -15,13 +15,12 @@ namespace MyPharmacy.Services
 {
     public interface IPharmacyService
     {
-        IEnumerable<PharmacyDto> GetAll();
+        PagedResult<PharmacyDto> GetAll(PharmacyGetAllQuery query);
         PharmacyDto GetOne(int id);
         int Create(CreatePharmacyDto dto);
         void Update(UpdatePharmacyDto dto);
         void Delete(int id);
-        IEnumerable<DrugDto> GetAllByNameOfSubstance(string nameOfSubstance);
-       // IEnumerable<DrugDto> GetAllByCategory(DrugQuery query);
+
     }
 
     public class PharmacyService : IPharmacyService
@@ -39,60 +38,51 @@ namespace MyPharmacy.Services
             _userContextService = userContextService;
         }
 
-        /*public IEnumerable<DrugDto> GetAllByCategory(DrugQuery query)
+       
+        
+        
+        public PagedResult<PharmacyDto> GetAll(PharmacyGetAllQuery query)
         {
-            
-            var temporaryQuery = _dbContext
-                .Drugs
-                .Include(d => d.DrugInformation)
-                .Include(d => d.Pharmacy)
-                .ThenInclude(a => a.Address)
-                .Where(d => query.Phrase == null || (d.DrugCategory.ToLower().Contains(query.Phrase.ToLower()) || d.DrugsName.ToLower().Contains(query.Phrase.ToLower())));
-
-            if(!string.IsNullOrEmpty(query.City))
-                temporaryQuery = temporaryQuery.Where(d => d.Pharmacy.Address.City == query.City);
-
-
-            var sortCategory = new Dictionary<string, Expression<Func<Drug, object>>>
-            {
-                {nameof(Drug.DrugCategory), d => d.DrugCategory },
-                {nameof(Drug.DrugsName), d =>d.DrugsName },
-                {nameof(Drug.Price), d => d.Price },
-                {nameof(Drug.SubstancesName), d => d.SubstancesName }
-            };
-
-
-            if(query.SortDirection == SortDirection.DESC)
-            {
-                temporaryQuery.OrderByDescending(sortCategory[query.SortCategory]);
-            }
-            else
-            {
-                temporaryQuery.OrderBy(sortCategory[query.SortCategory]);
-            }
-            var drugs = temporaryQuery.Skip(query.NumberPositionsOnPage * (query.ActualPage - 1))
-                .Take(query.NumberPositionsOnPage).ToList();
-            var drugsDtos = _mapper.Map<List<DrugDto>>(drugs);
-
-            //var result = new 
-          
-                
-        }
-        */
-
-        public IEnumerable<PharmacyDto> GetAll( )
-        {
-
             var pharmacies = _dbContext
                 .Pharmacies
                 .Include(x => x.Address)
-                .ToList();
+                .Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
-            var pharmaciesDto = _mapper.Map<List<PharmacyDto>>(pharmacies);
-            return pharmaciesDto;
 
+            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
+            {
+                if (query.GetByChar != '0')
+                    pharmacies = pharmacies.Where(p => p.Name.StartsWith(query.GetByChar));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    pharmacies.OrderBy(d => d.Name);
+                else
+                    pharmacies.OrderByDescending(d => d.Name);
+            }
+            else
+            {
+                if (query.GetByChar != '0')
+                    pharmacies = pharmacies.Where(d => d.Address.City.StartsWith(query.GetByChar));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    pharmacies.OrderBy(d => d.Address.City);
+                else
+                    pharmacies.OrderByDescending(d => d.Address.City);
+            }
+
+            var finalPharmacies = pharmacies
+               .Skip((query.PageNumber - 1) * query.PageSize)
+               .Take(query.PageSize).ToList();
+            var totalItemsCount = finalPharmacies.Count();
+            var pharmaciesDto = _mapper.Map<List<PharmacyDto>>(finalPharmacies);
+
+            var result = new PagedResult<PharmacyDto>(pharmaciesDto, totalItemsCount, query.PageSize, query.PageNumber);
+
+            return result;
         }
 
+        
+        /*
         public IEnumerable<DrugDto> GetAllByNameOfSubstance(string nameOfSubstance)
         {
             
@@ -107,7 +97,7 @@ namespace MyPharmacy.Services
             
          
         }
-
+        */
         /*
         public void Delete(int id)
         {
@@ -179,35 +169,7 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
         */
-        private Pharmacy GetPharmacyByCreatedUserForAdminAndManager(int id)
-        {
-            Pharmacy pharmacy;
-            var pharmacies = _dbContext
-                .Pharmacies
-                .Include(p => p.Drugs)
-                .Include(p => p.Address);
 
-            if (_userContextService.Role == "Admin")
-            {
-                if (id > 0)
-                {
-                    pharmacy = pharmacies.FirstOrDefault(p => p.Id == id);
-                }
-                else
-                    throw new BadRequestException($"Pharmacy Id must be greater than 0");
-            }
-            else
-            {
-                pharmacy = pharmacies.FirstOrDefault(p => p.CreatedByUserId == _userContextService.GetUserId);
-
-            }
-            if (pharmacy is null)
-            {
-                throw new NotFoundException($"Pharmacy not found");
-            }
-
-            return pharmacy;
-        }
 
         public void Delete(int id)
         {
@@ -310,7 +272,10 @@ namespace MyPharmacy.Services
         
         public PharmacyDto GetOne(int id)
         {
-           
+            if(id < 1)
+            {
+                throw new BadRequestException($"Pharmacy id must be greater than {id}");
+            }
             var pharmacy = _dbContext
                 .Pharmacies
                 .Include(x => x.Address)
@@ -328,9 +293,78 @@ namespace MyPharmacy.Services
           
         }
 
-        
-        
+        private Pharmacy GetPharmacyByCreatedUserForAdminAndManager(int id)
+        {
+            Pharmacy pharmacy;
+            var pharmacies = _dbContext
+                .Pharmacies
+                .Include(p => p.Drugs)
+                .Include(p => p.Address);
+
+            if (_userContextService.Role == "Admin")
+            {
+                if (id > 0)
+                {
+                    pharmacy = pharmacies.FirstOrDefault(p => p.Id == id);
+                }
+                else
+                    throw new BadRequestException($"Pharmacy Id must be greater than 0");
+            }
+            else
+            {
+                pharmacy = pharmacies.FirstOrDefault(p => p.CreatedByUserId == _userContextService.GetUserId);
+
+            }
+            if (pharmacy is null)
+            {
+                throw new NotFoundException($"Pharmacy not found");
+            }
+
+            return pharmacy;
+        }
+
+
+        /*public IEnumerable<DrugDto> GetAllByCategory(DrugQuery query)
+       {
+
+           var temporaryQuery = _dbContext
+               .Drugs
+               .Include(d => d.DrugInformation)
+               .Include(d => d.Pharmacy)
+               .ThenInclude(a => a.Address)
+               .Where(d => query.Phrase == null || (d.DrugCategory.ToLower().Contains(query.Phrase.ToLower()) || d.DrugsName.ToLower().Contains(query.Phrase.ToLower())));
+
+           if(!string.IsNullOrEmpty(query.City))
+               temporaryQuery = temporaryQuery.Where(d => d.Pharmacy.Address.City == query.City);
+
+
+           var sortCategory = new Dictionary<string, Expression<Func<Drug, object>>>
+           {
+               {nameof(Drug.DrugCategory), d => d.DrugCategory },
+               {nameof(Drug.DrugsName), d =>d.DrugsName },
+               {nameof(Drug.Price), d => d.Price },
+               {nameof(Drug.SubstancesName), d => d.SubstancesName }
+           };
+
+
+           if(query.SortDirection == SortDirection.DESC)
+           {
+               temporaryQuery.OrderByDescending(sortCategory[query.SortCategory]);
+           }
+           else
+           {
+               temporaryQuery.OrderBy(sortCategory[query.SortCategory]);
+           }
+           var drugs = temporaryQuery.Skip(query.NumberPositionsOnPage * (query.ActualPage - 1))
+               .Take(query.NumberPositionsOnPage).ToList();
+           var drugsDtos = _mapper.Map<List<DrugDto>>(drugs);
+
+           //var result = new 
+
+
+       }*/
+
     }
 
-        
+
 }

@@ -60,9 +60,10 @@ namespace MyPharmacy
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<PharmacyDbContext>();
             services.AddAutoMapper(this.GetType().Assembly);
-            //services.AddScoped<IDrugService, DrugService>();
+            services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddScoped<ISearchEngineService, SearchEngineService>();
+            services.AddScoped<IDrugInformationService, DrugInformationService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

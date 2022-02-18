@@ -29,9 +29,16 @@ namespace MyPharmacy
                 .ForMember(p => p.Address, pd => pd.MapFrom(dto => new Address() { City = dto.City, Street = dto.Street, PostalCode = dto.PostalCode }));
 
             CreateMap<DrugDto, Drug>();
-            CreateMap<Drug, DrugDto>();
+            CreateMap<Drug, DrugDto>()
+                .ForMember(d => d.DrugsName, dd => dd.MapFrom(g => g.DrugInformation.DrugsName))
+                .ForMember(d => d.SubstancesName, dd => dd.MapFrom(g => g.DrugInformation.SubstancesName))
+                .ForMember(d => d.NumberOfTablets, dd => dd.MapFrom(g => g.DrugInformation.NumberOfTablets))
+                .ForMember(d => d.MilligramsPerTablets, dd => dd.MapFrom(g => g.DrugInformation.MilligramsPerTablets))
+                .ForMember(d => d.LumpSumDrug, dd => dd.MapFrom(g => g.DrugInformation.LumpSumDrug))
+                .ForMember(d => d.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired));
 
-         
+
+
             CreateMap<Drug, UpdateDrugDto>();
 
 
@@ -55,6 +62,10 @@ namespace MyPharmacy
                 .ForMember(d => d.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired))
                 .ForMember(d => d.MilligramsPerTablets, dd => dd.MapFrom(g => g.DrugInformation.MilligramsPerTablets))
                 .ForMember(d => d.NumberOfTablets, dd => dd.MapFrom(g => g.DrugInformation.NumberOfTablets));
+
+            CreateMap<DrugInformation, DrugInformationDto>();
+
+            CreateMap<CreateDrugInformationDto, DrugInformation>();
 
 
         }
