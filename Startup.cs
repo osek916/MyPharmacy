@@ -64,6 +64,7 @@ namespace MyPharmacy
             services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddScoped<ISearchEngineService, SearchEngineService>();
             services.AddScoped<IDrugInformationService, DrugInformationService>();
+            services.AddScoped<IDrugCategoryService, DrugCategoryService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

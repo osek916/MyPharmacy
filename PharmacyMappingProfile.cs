@@ -67,6 +67,12 @@ namespace MyPharmacy
 
             CreateMap<CreateDrugInformationDto, DrugInformation>();
 
+            CreateMap<DrugCategory, DrugCategoryDto>();
+
+            CreateMap<CreateDrugCategoryDto, DrugCategory>();
+
+            CreateMap<UpdateDrugCategoryDto, DrugCategory>();
+
 
         }
     }
