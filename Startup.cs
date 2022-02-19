@@ -73,11 +73,21 @@ namespace MyPharmacy
             services.AddHttpContextAccessor();//pozwala na wstrzykniêcie do konstruktora UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ClientFront", builder =>
+                    builder.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:8080")
+
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)
         {
+            app.UseCors("ClientFront");
             seeder.Seed();
             if (env.IsDevelopment())
             {
