@@ -93,8 +93,6 @@ namespace MyPharmacy.Services
         }
        */
        
-
-
        
         public PharmacyDto GetOne(int id)
         {

@@ -9,7 +9,6 @@ namespace MyPharmacy.Models.Interfaces
     {
         public int PageNumber { get; set; } 
         public int PageSize { get; set; } 
-        public int NumberPositionsOnPage { get; set; }
         public int ActualPage { get; set; }
     }
 }

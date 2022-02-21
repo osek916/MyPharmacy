@@ -86,7 +86,7 @@ namespace MyPharmacy.Services
             var finalDrugs = drugs
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize).ToList();
-            var totalItemsCount = finalDrugs.Count();
+            var totalItemsCount = drugs.Count();
             var drugsDtos = _mapper.Map<List<DrugDto>>(finalDrugs);
 
             var result = new PagedResult<DrugDto>(drugsDtos, totalItemsCount, query.PageSize, query.PageNumber);

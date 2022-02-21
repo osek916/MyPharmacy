@@ -19,7 +19,6 @@ namespace MyPharmacy.Services
         void RegisterUser(UserRegisterDto dto);
         string GenerateJwt(LoginDto dto);
         
-
     }
     public class AccountService : IAccountService
     {

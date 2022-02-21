@@ -8,11 +8,8 @@ namespace MyPharmacy.Models
 {
     public class UpdateDrugDto
     {
-        [Required]
-        
         public int AmountOfPackages { get; set; }
         public decimal Price { get; set; }
         public int OptionalId { get; set; } = 0;
-
     }
 }

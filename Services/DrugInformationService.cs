@@ -64,10 +64,10 @@ namespace MyPharmacy.Services
             var finaldrugInformations = drugInformations
                .Skip((query.PageNumber - 1) * query.PageSize)
                .Take(query.PageSize).ToList();
-            var totalItemsCount = finaldrugInformations.Count();
-            var pharmaciesDto = _mapper.Map<List<DrugInformationDto>>(finaldrugInformations);
+            var totalItemsCount = drugInformations.Count();
+            var drugInformationDtos = _mapper.Map<List<DrugInformationDto>>(finaldrugInformations);
 
-            var result = new PagedResult<DrugInformationDto>(pharmaciesDto, totalItemsCount, query.PageSize, query.PageNumber);
+            var result = new PagedResult<DrugInformationDto>(drugInformationDtos, totalItemsCount, query.PageSize, query.PageNumber);
 
             return result;
         }

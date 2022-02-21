@@ -73,6 +73,10 @@ namespace MyPharmacy
             services.AddScoped<IValidator<CreateDrugDto>, CreateDrugDtoValidator>();
             services.AddScoped<IValidator<CreateDrugInformationDto >, CreateDrugInformationDtoValidator>();
             services.AddScoped<IValidator<CreatePharmacyDto>, CreatePharmacyDtoValidator>();
+            services.AddScoped<IValidator<UpdateDrugCategoryDto>,  UpdateDrugCategoryDtoValidator > ();
+            services.AddScoped<IValidator<UpdateDrugDto>, UpdateDrugDtoValidator > ();
+            services.AddScoped<IValidator<UpdateDrugInformationDto>, UpdateDrugInformationDtoValidator>();
+            services.AddScoped<IValidator<UpdatePharmacyDto>, UpdatePharmacyDtoValidator>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//pozwala na wstrzykniêcie do konstruktora UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();

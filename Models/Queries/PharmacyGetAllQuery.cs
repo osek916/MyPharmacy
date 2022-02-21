@@ -11,13 +11,10 @@ namespace MyPharmacy.Models
         public bool HasPresciptionDrugs { get; set; } = true;
         public char GetByChar { get; set; } = '0';
         public SortDirection SortDirection { get; set; } = SortDirection.ASC;
-
         public PharmaciesSortBy PharmaciesSortBy { get; set; } = PharmaciesSortBy.City;
         public string Phrase { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 5;
-        public int NumberPositionsOnPage { get; set; }
         public int ActualPage { get; set; }
-        //public SortDirection SortDirection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

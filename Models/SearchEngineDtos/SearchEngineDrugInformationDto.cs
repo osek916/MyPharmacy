@@ -13,10 +13,9 @@ namespace MyPharmacy.Models
         public string Description { get; set; }
         public int NumberOfTablets { get; set; }
         public int MilligramsPerTablets { get; set; }
-        public bool LumpSumDrug { get; set; } //lek na ryczałt
+        public bool LumpSumDrug { get; set; } 
         public bool PrescriptionRequired { get; set; }
 
-        //dodane
         public List<string>  DrugCategories { get; set; }
 
     }
