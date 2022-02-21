@@ -73,6 +73,7 @@ namespace MyPharmacy
 
             CreateMap<UpdateDrugCategoryDto, DrugCategory>();
 
+            CreateMap<User, UserDto>();
 
         }
     }

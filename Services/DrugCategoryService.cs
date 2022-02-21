@@ -24,7 +24,7 @@ namespace MyPharmacy.Services
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public DrugCategoryService(PharmacyDbContext dbContext, IMapper mapper, ILogger logger)
+        public DrugCategoryService(PharmacyDbContext dbContext, IMapper mapper, ILogger<DrugCategoryService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -59,19 +59,6 @@ namespace MyPharmacy.Services
             return drugCategory.Id;
         }
 
-        public void DeleteById(int id)
-        {
-            var drugCategory = _dbContext
-                .DrugCategories
-                .FirstOrDefault(d => d.Id == id);
-
-            if(drugCategory is null)
-            {
-                throw new NotFoundException($"DrugCategory with id: {id} not found");
-            }
-            _dbContext.DrugCategories.Remove(drugCategory);
-            _dbContext.SaveChanges();
-        }
 
         public void UpdateById(UpdateDrugCategoryDto dto, int drugCategoryId)
         {
@@ -89,6 +76,23 @@ namespace MyPharmacy.Services
             drugCategory.Description = dto.Description;
             _dbContext.SaveChanges();
         }
+
+
+        public void DeleteById(int id)
+        {
+            var drugCategory = _dbContext
+                .DrugCategories
+                .FirstOrDefault(d => d.Id == id);
+
+            if(drugCategory is null)
+            {
+                throw new NotFoundException($"DrugCategory with id: {id} not found");
+            }
+            _dbContext.DrugCategories.Remove(drugCategory);
+            _dbContext.SaveChanges();
+        }
+
+        
 
     }
 }

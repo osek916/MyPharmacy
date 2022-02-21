@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyPharmacy.Models;
 using MyPharmacy.Services;
 using System;
@@ -32,5 +33,7 @@ namespace MyPharmacy.Controllers
             string token = _accountService.GenerateJwt(dto);
             return Ok(token);
         }
+
+        
     }
 }

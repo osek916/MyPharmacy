@@ -69,10 +69,15 @@ namespace MyPharmacy
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
+            services.AddScoped<IValidator<CreateDrugCategoryDto>, CreateDrugCategoryDtoValidator>();
+            services.AddScoped<IValidator<CreateDrugDto>, CreateDrugDtoValidator>();
+            services.AddScoped<IValidator<CreateDrugInformationDto >, CreateDrugInformationDtoValidator>();
+            services.AddScoped<IValidator<CreatePharmacyDto>, CreatePharmacyDtoValidator>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//pozwala na wstrzykniêcie do konstruktora UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
+            /*
             services.AddCors(options =>
             {
                 options.AddPolicy("ClientFront", builder =>
@@ -81,13 +86,13 @@ namespace MyPharmacy
                     .WithOrigins("http://localhost:8080")
 
                 );
-            });
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)
         {
-            app.UseCors("ClientFront");
+            /* app.UseCors("ClientFront"); */
             seeder.Seed();
             if (env.IsDevelopment())
             {

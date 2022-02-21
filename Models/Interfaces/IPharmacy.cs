@@ -1,12 +1,11 @@
-﻿using MyPharmacy.Models.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Entities
+namespace MyPharmacy.Models.Interfaces
 {
-    public class Pharmacy : IPharmacy
+    public interface IPharmacy
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -18,6 +18,8 @@ namespace MyPharmacy.Services
     {
         void RegisterUser(UserRegisterDto dto);
         string GenerateJwt(LoginDto dto);
+        
+
     }
     public class AccountService : IAccountService
     {
@@ -30,8 +32,9 @@ namespace MyPharmacy.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
         }
+
         
-        
+
         public string GenerateJwt(LoginDto dto)
         {
             var user = _dbContext.Users
@@ -48,17 +51,25 @@ namespace MyPharmacy.Services
             {
                 throw new BadRequestException("Invalid username or password");
             }
-
+            Claim claim;
+            if(user.PharmacyId is null)
+            {
+                int temporaryZero = 0;
+                claim = new Claim("PharmacyId", temporaryZero.ToString());
+            }
+            else
+            {
+                claim = new Claim("PharmacyId", user.PharmacyId.Value.ToString());
+            }
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new Claim(ClaimTypes.Name, $"{user.LastName}"),
                 new Claim("Gender", $"{user.Gender}"),
                 new Claim(ClaimTypes.Email, $"{user.Email}"),
                 new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
                 new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd")),
-                new Claim("PharmacyId", user.PharmacyId.Value.ToString())
-                
+                claim
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

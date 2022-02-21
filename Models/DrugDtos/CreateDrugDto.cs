@@ -6,21 +6,14 @@ using System.Threading.Tasks;
 
 namespace MyPharmacy.Models
 {
-    
-    public class CreateDrugInformationDto
+    public class CreateDrugDto
     {
-        [Required]
         public string DrugsName { get; set; }
-        [Required]
         public string SubstancesName { get; set; }
-        public string Description { get; set; }
-        [Required]
         public int NumberOfTablets { get; set; }
-        [Required]
         public int MilligramsPerTablets { get; set; }
-        [Required]
-        public bool LumpSumDrug { get; set; } //lek na ryczałt
-        [Required]
-        public bool PrescriptionRequired { get; set; }
+        public int AmountOfPackages { get; set; }
+        public decimal Price { get; set; }
+
     }
 }

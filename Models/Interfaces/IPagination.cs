@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Models
+namespace MyPharmacy.Models.Interfaces
 {
-    public abstract class Pagination 
+    public interface IPagination
     {
-        public string Phrase { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public int PageNumber { get; set; } 
+        public int PageSize { get; set; } 
         public int NumberPositionsOnPage { get; set; }
         public int ActualPage { get; set; }
     }

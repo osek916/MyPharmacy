@@ -20,39 +20,7 @@ namespace MyPharmacy.Controllers
         {
             _pharmacyService = pharmacyService;
         }
-        
-       
 
-        //ADMIN
-        [HttpDelete]
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult Delete([FromQuery]int bodyId)
-        {
-            _pharmacyService.Delete(bodyId);
-            return NoContent();
-        }
-
-        //Manager może edytować stworzoną przez siebie aptekę
-        [HttpPut]
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult Update([FromBody] UpdatePharmacyDto dto)
-        {
-            _pharmacyService.Update(dto);
-            return Ok();
-        }
-
-        
-
-        //Manager tworzy TYLKO JEDNĄ aptekę
-        [HttpPost]
-        [Authorize(Roles ="Manager")]
-        public ActionResult CreatePharmacy([FromBody] CreatePharmacyDto dto)
-        {
-            var id = _pharmacyService.Create(dto);
-            return Created($"api/pharmacy/{id}", null);
-        }
-
-        //DO ZROBIENIA
         [HttpGet]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<PagedResult<PharmacyDto>> GetAll([FromQuery] PharmacyGetAllQuery query)
@@ -69,13 +37,43 @@ namespace MyPharmacy.Controllers
         public ActionResult<PharmacyDto> GetOne([FromRoute] int id)
         {
             var pharmacyDto = _pharmacyService.GetOne(id);
-            
-            if(pharmacyDto is null)
+
+            if (pharmacyDto is null)
             {
                 return NotFound();
             }
             return pharmacyDto;
         }
+
+
+
+        //Manager tworzy TYLKO JEDNĄ aptekę
+        [HttpPost]
+        [Authorize(Roles = "Manager")]
+        public ActionResult CreatePharmacy([FromBody] CreatePharmacyDto dto)
+        {
+            var id = _pharmacyService.Create(dto);
+            return Created($"api/pharmacy/{id}", null);
+        }
+
+        //Manager może edytować stworzoną przez siebie aptekę
+        [HttpPut]
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult Update([FromBody] UpdatePharmacyDto dto)
+        {
+            _pharmacyService.Update(dto);
+            return Ok();
+        }
+
+        //ADMIN
+        [HttpDelete]
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult Delete([FromQuery]int bodyId)
+        {
+            _pharmacyService.Delete(bodyId);
+            return NoContent();
+        }
+  
 
 
     }

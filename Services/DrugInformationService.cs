@@ -26,7 +26,7 @@ namespace MyPharmacy.Services
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public DrugInformationService(PharmacyDbContext dbContext, IMapper mapper, ILogger logger)
+        public DrugInformationService(PharmacyDbContext dbContext, IMapper mapper, ILogger<DrugInformationService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -80,18 +80,6 @@ namespace MyPharmacy.Services
             return (drugInformation.Id);
         }
 
-        public void DeleteById(int drugInformationId)
-        {
-            var drugInformation = _dbContext
-                .DrugInformations
-                .FirstOrDefault(d => d.Id == drugInformationId);
-
-            if(drugInformation is null)
-                throw new NotFoundException($"DrugInformation with id: {drugInformationId} not found");
-
-            _dbContext.DrugInformations.Remove(drugInformation);
-            _dbContext.SaveChanges();
-        }
 
         public void UpdateById(UpdateDrugInformationDto dto, int drugInformationId)
         {
@@ -107,17 +95,17 @@ namespace MyPharmacy.Services
                 throw new NotFoundException($"DrugInformation with id: {drugInformationId} not found");
 
             var temporaryDrugCategories = new List<DrugCategory>();
-            if(dto.DrugCategoryNames.Count() != 0 && !(dto.DrugCategoryNames is null))
+            if (dto.DrugCategoryNames.Count() != 0 && !(dto.DrugCategoryNames is null))
             {
                 foreach (var item in dto.DrugCategoryNames)
                 {
                     var categoryWithThisName = _dbContext.DrugCategories.FirstOrDefault(d => d.CategoryName.ToLower().Contains(item.ToLower()));
-                    if ( !(categoryWithThisName is null))
+                    if (!(categoryWithThisName is null))
                     {
                         temporaryDrugCategories.Add(categoryWithThisName);
                     }
                 }
-                if(temporaryDrugCategories.Count != 0)
+                if (temporaryDrugCategories.Count != 0)
                 {
                     drugInformation.DrugCategories = new List<DrugCategory>(temporaryDrugCategories);
                     drugInformation.DrugCategories.AddRange(temporaryDrugCategories);
@@ -131,9 +119,24 @@ namespace MyPharmacy.Services
             drugInformation.NumberOfTablets = dto.NumberOfTablets;
             drugInformation.PrescriptionRequired = dto.PrescriptionRequired;
             drugInformation.SubstancesName = drugInformation.SubstancesName;
-            
+
 
             _dbContext.SaveChanges();
         }
+
+        public void DeleteById(int drugInformationId)
+        {
+            var drugInformation = _dbContext
+                .DrugInformations
+                .FirstOrDefault(d => d.Id == drugInformationId);
+
+            if(drugInformation is null)
+                throw new NotFoundException($"DrugInformation with id: {drugInformationId} not found");
+
+            _dbContext.DrugInformations.Remove(drugInformation);
+            _dbContext.SaveChanges();
+        }
+
+        
     }
 }

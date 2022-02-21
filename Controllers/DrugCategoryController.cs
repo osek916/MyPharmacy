@@ -35,6 +35,14 @@ namespace MyPharmacy.Controllers
             return Created($"api/drugcategory/{newDrugCategoryId}", null);
         }
 
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult Update([FromQuery] UpdateDrugCategoryDto dto, int id)
+        {
+            _drugCategoryService.UpdateById(dto, id);
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public ActionResult DeleteById(int id)
@@ -43,12 +51,6 @@ namespace MyPharmacy.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public ActionResult Update([FromQuery] UpdateDrugCategoryDto dto, int id)
-        {
-            _drugCategoryService.UpdateById(dto, id);
-            return Ok();
-        }
+        
     }
 }

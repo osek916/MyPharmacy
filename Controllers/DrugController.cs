@@ -19,6 +19,24 @@ namespace MyPharmacy.Controllers
             _drugService = drugService;
         }
 
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult<PagedResult<DrugDto>> GetAll([FromRoute] int pharmacyId, [FromQuery] DrugGetAllQuery query)
+        {
+            var drugsDto = _drugService.GetAll(pharmacyId, query);
+            return Ok(drugsDto);
+        }
+
+        [HttpGet("{drugId}")]
+        [Authorize(Roles = "Admin, Manager, Pharmacist")]
+        public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
+        {
+            var drugDto = _drugService.GetById(pharmacyId, drugId);
+            return drugDto;
+        }
+
+
         [HttpPost]
         [Authorize(Roles = "Manager")]
         public ActionResult<CreateDrugDto> Create([FromRoute] int pharmacyId, [FromBody] CreateDrugDto dto)
@@ -36,14 +54,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        /*
-        [HttpPut("{drugId}")]
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult UpdateDrugById([FromRoute] int pharmacyId, [FromRoute]int drugId, [FromBody]UpdateDrugDto dto)
-        {
-            _drugService.UpdateDrugById(pharmacyId, drugId, dto);
-            return Ok();
-        }*/
+        
 
         [HttpDelete("{drugId}")]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
@@ -53,13 +64,7 @@ namespace MyPharmacy.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin, Manager, Pharmacist")]
-        public ActionResult<PagedResult<DrugDto>> GetAll([FromRoute] int pharmacyId, [FromQuery] DrugGetAllQuery query)
-        {
-            var drugsDto = _drugService.GetAll(pharmacyId, query);
-            return Ok(drugsDto);
-        }
+        
 
         [HttpDelete]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
@@ -69,13 +74,7 @@ namespace MyPharmacy.Controllers
             return NoContent();
         }
 
-        [HttpGet("{drugId}")]
-        [Authorize(Roles = "Admin, Manager, Pharmacist")]
-        public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
-        {
-            var drugDto = _drugService.GetById(pharmacyId, drugId);
-            return drugDto;
-        }
+
 
 
 
@@ -104,8 +103,15 @@ namespace MyPharmacy.Controllers
             return Ok(drugsDto);
         }
         */
-       
+        /*
+         [HttpPut("{drugId}")]
+         [Authorize(Roles = "Admin, Manager")]
+         public ActionResult UpdateDrugById([FromRoute] int pharmacyId, [FromRoute]int drugId, [FromBody]UpdateDrugDto dto)
+         {
+             _drugService.UpdateDrugById(pharmacyId, drugId, dto);
+             return Ok();
+         }*/
 
-        
+
     }
 }

@@ -17,9 +17,6 @@ namespace MyPharmacy
 
         public void Seed()
         {
-
-
-
             if (_dbContext.Database.CanConnect())
             {
 
@@ -51,8 +48,6 @@ namespace MyPharmacy
                     _dbContext.SaveChanges();
                 }
 
-
-
                 if (!_dbContext.Pharmacies.Any())
                 {
                     var pharmacies = GetPharmacy();
@@ -60,31 +55,11 @@ namespace MyPharmacy
                     _dbContext.SaveChanges();
                 }
 
-
-
             }
 
         }
 
-        /*
-        private IEnumerable<User> GetUsers()
-        {
-            var users = new List<User>()
-            {
-                new User()
-                {
-                    FirstName = "Kamil",
-                    LastName = "Łosiak",
-                    Email = "kamil@wp.pl",
-                    DateOfBirth = new DateTime(1992-11-12),
-                    Nationality = "Poland",
-                    RoleId = 1,
-                    
-
-                }
-            }
-        }
-        */
+        
 
         private IEnumerable<Status> GetStatuses()
         {
@@ -288,7 +263,6 @@ namespace MyPharmacy
         public IEnumerable<DrugInformation> GetDrugInformations()
         {
             var drugCategoriesList = _dbContext.DrugCategories;
-            //var drugCategoriesList = _dbContext.
             var drugInformations = new List<DrugInformation>()
             {
                 new DrugInformation()
@@ -300,7 +274,6 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic").ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic").ToList()
 
                 },
                 new DrugInformation()
@@ -312,7 +285,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Hypnotic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Hypnotic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -323,7 +295,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = false,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Nootropic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Nootropic").ToList()
 
                 },
                 new DrugInformation()
@@ -335,7 +306,6 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Stimulant" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Stimulant").ToList()
                 },
                 new DrugInformation()
                 {
@@ -346,7 +316,6 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Stimulant" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Stimulant").ToList()
                 },
                 new DrugInformation()
                 {
@@ -357,8 +326,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = false,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Painkiller" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Painkiller").ToList()
-
                 },
                 new DrugInformation()
                 {
@@ -369,8 +336,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = false,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Painkiller" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Painkiller").ToList()
-
                 },
                 new DrugInformation()
                 {
@@ -381,9 +346,7 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Hypnotic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Hypnotic").ToList()
-
-                },
+               },
                 new DrugInformation()
                 {
                             DrugsName = "Nootropil",
@@ -393,7 +356,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Nootropic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Nootropic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -404,7 +366,6 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Hypnotic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Hypnotic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -415,7 +376,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -426,7 +386,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Hypnotic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Hypnotic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -437,7 +396,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = false,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Painkiller" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Painkiller").ToList()
                 },
                 new DrugInformation()
                 {
@@ -448,7 +406,6 @@ namespace MyPharmacy
                             LumpSumDrug = true,
                             PrescriptionRequired = true,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Antipsychotic" || d.CategoryName == "Anxiolytic").ToList()
                 },
                 new DrugInformation()
                 {
@@ -459,8 +416,6 @@ namespace MyPharmacy
                             LumpSumDrug = false,
                             PrescriptionRequired = false,
                             DrugCategories = drugCategoriesList.Where(d => d.CategoryName == "Painkiller" ).ToList()
-                            //DrugCategories = new List<DrugCategory>().Where(d => d.CategoryName == "Painkiller" ).ToList()
-
                 },
             };
             return drugInformations;
@@ -508,10 +463,7 @@ namespace MyPharmacy
             };
 
             return drugCategories;
-        }
-        
-
-
+        }    
     }
 
 }

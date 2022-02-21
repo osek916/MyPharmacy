@@ -42,36 +42,65 @@ namespace MyPharmacy.Services
             _userContextService = userContextService;
         }
 
-        /*
-        public IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query)
+        public PagedResult<DrugDto> GetAll(int pharmacyId, DrugGetAllQuery query)
         {
-            var temporaryQuery = _dbContext
-                .Drugs
-            var drugs = _dbContext.
-        
-        */
-
-        /*
-        public int Create(int pharmacyId, CreateDrugDto dto)
-        {
-            var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => dto.DrugsName.ToLower() == d.DrugsName.ToLower() && dto.MilligramsPerTablets == d.MilligramsPerTablets &&
-            dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());
-
-            if (drugInformation is null || dto.Price < 0 || dto.NumberOfTablets < 0 || dto.MilligramsPerTablets < 0)
-                throw new NotFoundException($"Drug with this information parameters not found. Chec the correctness of the entered data");
-
-            Drug newDrug = new Drug()
+            if (pharmacyId < 1)
             {
-                AmountOfPackages = dto.AmountOfPackages,
-                Price = dto.Price,
-                DrugInformationId = drugInformation.Id
-            };
+                throw new BadRequestException("Drug id must be greater than 0");
+            }
+            if (_userContextService.Role != "Admin")
+            {
+                if (_userContextService.PharmacyId != pharmacyId)
+                {
+                    throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");
+                }
+            }
 
-            _dbContext.Drugs.Add(newDrug);
-            _dbContext.SaveChanges();
-            return newDrug.Id;
+            var drugs = _dbContext
+                .Drugs
+                .Include(d => d.DrugInformation)
+                .Where(d => d.PharmacyId == pharmacyId && (query.Phrase == null || (d.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))));
+
+
+            if (query.DrugSortBy == DrugSortBy.DrugName)
+            {
+                if (query.GetByChar != '0')
+                    drugs = drugs.Where(d => d.DrugInformation.DrugsName.StartsWith(query.GetByChar));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    drugs.OrderBy(d => d.DrugInformation.DrugsName);
+                else
+                    drugs.OrderByDescending(d => d.DrugInformation.DrugsName);
+            }
+            else
+            {
+                if (query.GetByChar != '0')
+                    drugs = drugs.Where(d => d.DrugInformation.SubstancesName.StartsWith(query.GetByChar));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    drugs.OrderBy(d => d.DrugInformation.SubstancesName);
+                else
+                    drugs.OrderByDescending(d => d.DrugInformation.SubstancesName);
+            }
+
+            var finalDrugs = drugs
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize).ToList();
+            var totalItemsCount = finalDrugs.Count();
+            var drugsDtos = _mapper.Map<List<DrugDto>>(finalDrugs);
+
+            var result = new PagedResult<DrugDto>(drugsDtos, totalItemsCount, query.PageSize, query.PageNumber);
+
+            return result;
+
         }
-        */
+
+        public DrugDto GetById(int pharmacyId, int drugId)
+        {
+            var drug = GetDrugWithAdminPrivilege(drugId);
+            return _mapper.Map<DrugDto>(drug);
+
+        }
 
         public int Create(int pharmacyId, CreateDrugDto dto)
         {
@@ -125,117 +154,15 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
 
-        public PagedResult<DrugDto> GetAll(int pharmacyId, DrugGetAllQuery query)
-        {
-            if (pharmacyId < 1)
-            {
-                throw new BadRequestException("Drug id must be greater than 0");
-            }
-            if (_userContextService.Role != "Admin")
-            {
-                if (_userContextService.PharmacyId != pharmacyId)
-                {
-                    throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");
-                }
-            }
-
-            var drugs = _dbContext
-                .Drugs
-                .Include(d => d.DrugInformation)
-                .Where(d => d.PharmacyId == pharmacyId && (query.Phrase == null || (d.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower()) )));
-
-
-            if (query.DrugSortBy == DrugSortBy.DrugName)
-            {
-                if (query.GetByChar != '0')
-                    drugs = drugs.Where(d => d.DrugInformation.DrugsName.StartsWith(query.GetByChar));
-
-                if (query.SortDirection == SortDirection.ASC)
-                    drugs.OrderBy(d => d.DrugInformation.DrugsName);
-                else
-                    drugs.OrderByDescending(d => d.DrugInformation.DrugsName);
-            }
-            else
-            {
-                if (query.GetByChar != '0')
-                    drugs = drugs.Where(d => d.DrugInformation.SubstancesName.StartsWith(query.GetByChar));
-
-                if (query.SortDirection == SortDirection.ASC)
-                    drugs.OrderBy(d => d.DrugInformation.SubstancesName);
-                else
-                    drugs.OrderByDescending(d => d.DrugInformation.SubstancesName);
-            }
-
-            var finalDrugs = drugs
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize).ToList();
-            var totalItemsCount = finalDrugs.Count();
-            var drugsDtos = _mapper.Map<List<DrugDto>>(finalDrugs);
-
-            var result = new PagedResult<DrugDto>(drugsDtos, totalItemsCount, query.PageSize, query.PageNumber);
-
-            return result;
-
-        }
         
-        /*
-        public void Update(int pharmacyId,  UpdateDrugDto dto)
-        {
-
-            if(dto.OptionalId < 1)
-            {
-                throw new BadRequestException("Drug id must be greater than 0");
-            }      
-            var pharmacy = GetPharmacyById(pharmacyId);
-            var drug = _dbContext
-                .Drugs
-                .FirstOrDefault(d => d.Id == dto.OptionalId);
-
-            if (drug is null)
-            {
-                throw new NotFoundException($"Drug with id: {dto.OptionalId} not found");
-            }
-            if()
-
-            drug.AmountOfPackages = dto.AmountOfPackages;
-            drug.Price = dto.Price;
-
-            _dbContext.SaveChanges();
-        }
-        */
-        /*
-        public void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto)
-        {
-            var pharmacy = GetPharmacyById(pharmacyId);
-            var drug = _dbContext
-                .Drugs
-                .FirstOrDefault(d => d.Id == drugId);
-            if(drug is null)
-            {
-                throw new NotFoundException($"Drug with id: {drugId} not found");
-            }
-
-            
-            drug.AmountOfPackages = dto.AmountOfPackages;
-            drug.Price = dto.Price;
-           
-
-            _dbContext.SaveChanges();
-        }
-        */
+        
+        
 
 
 
 
 
-        public DrugDto GetById(int pharmacyId, int drugId)
-        {
-            //var pharmacy = GetPharmacyById(pharmacyId);
-
-            var drug = GetDrugWithAdminPrivilege(drugId);
-            return _mapper.Map<DrugDto>(drug);
-                
-        }
+        
 
         
 
@@ -264,44 +191,16 @@ namespace MyPharmacy.Services
             _dbContext.RemoveRange(drugs);
             _dbContext.SaveChanges();
         }
-        /*
-        
-        public IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance)
-        {
-            var pharmacy = GetPharmacyById(pharmacyId);
 
-            var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance && d.PharmacyId == pharmacyId);  
-            if(drugs.Count() == 0)
-            {
-                throw new NotFoundException($"Drugs with this substances: {nameOfSubstance} not found in this Pharmacy");
-            }
-            var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
-            return drugDtos;
-        }
-        
-        public IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug)
-        {
-            var pharmacy = GetPharmacyById(pharmacyId);
-            var drugs = _dbContext.Drugs.Where(d => d.PharmacyId == pharmacyId && d.DrugsName == nameOfDrug);
-            if (drugs.Count() == 0)
-            {
-                throw new NotFoundException($"Drugs with this substances: {nameOfDrug} not found in this Pharmacy");
-            }
-            var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
-            return drugDtos;
-        }
-
-
-        */
         private Pharmacy GetPharmacyById(int pharmacyId)
         {
-            
+
             var pharmacy = _dbContext
                 .Pharmacies
                 .Include(p => p.Drugs)
                 .FirstOrDefault(p => p.Id == pharmacyId);
 
-            if(pharmacy is null)
+            if (pharmacy is null)
             {
                 throw new NotFoundException($"Pharmacy with id: {pharmacyId} not exist");
             }
@@ -336,3 +235,118 @@ namespace MyPharmacy.Services
 
     }
 }
+
+
+
+
+
+
+
+
+/*
+        public IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query)
+        {
+            var temporaryQuery = _dbContext
+                .Drugs
+            var drugs = _dbContext.
+        
+        */
+
+/*
+public int Create(int pharmacyId, CreateDrugDto dto)
+{
+    var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => dto.DrugsName.ToLower() == d.DrugsName.ToLower() && dto.MilligramsPerTablets == d.MilligramsPerTablets &&
+    dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());
+
+    if (drugInformation is null || dto.Price < 0 || dto.NumberOfTablets < 0 || dto.MilligramsPerTablets < 0)
+        throw new NotFoundException($"Drug with this information parameters not found. Chec the correctness of the entered data");
+
+    Drug newDrug = new Drug()
+    {
+        AmountOfPackages = dto.AmountOfPackages,
+        Price = dto.Price,
+        DrugInformationId = drugInformation.Id
+    };
+
+    _dbContext.Drugs.Add(newDrug);
+    _dbContext.SaveChanges();
+    return newDrug.Id;
+}
+*/
+
+
+/*
+        
+        public IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance)
+        {
+            var pharmacy = GetPharmacyById(pharmacyId);
+
+            var drugs = _dbContext.Drugs.Where(d => d.SubstancesName == nameOfSubstance && d.PharmacyId == pharmacyId);  
+            if(drugs.Count() == 0)
+            {
+                throw new NotFoundException($"Drugs with this substances: {nameOfSubstance} not found in this Pharmacy");
+            }
+            var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
+            return drugDtos;
+        }
+        
+        public IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug)
+        {
+            var pharmacy = GetPharmacyById(pharmacyId);
+            var drugs = _dbContext.Drugs.Where(d => d.PharmacyId == pharmacyId && d.DrugsName == nameOfDrug);
+            if (drugs.Count() == 0)
+            {
+                throw new NotFoundException($"Drugs with this substances: {nameOfDrug} not found in this Pharmacy");
+            }
+            var drugDtos = _mapper.Map<List<DrugDto>>(drugs);
+            return drugDtos;
+        }
+
+
+        */
+
+/*
+        public void Update(int pharmacyId,  UpdateDrugDto dto)
+        {
+
+            if(dto.OptionalId < 1)
+            {
+                throw new BadRequestException("Drug id must be greater than 0");
+            }      
+            var pharmacy = GetPharmacyById(pharmacyId);
+            var drug = _dbContext
+                .Drugs
+                .FirstOrDefault(d => d.Id == dto.OptionalId);
+
+            if (drug is null)
+            {
+                throw new NotFoundException($"Drug with id: {dto.OptionalId} not found");
+            }
+            if()
+
+            drug.AmountOfPackages = dto.AmountOfPackages;
+            drug.Price = dto.Price;
+
+            _dbContext.SaveChanges();
+        }
+        */
+/*
+public void UpdateDrugById(int pharmacyId, int drugId, UpdateDrugDto dto)
+{
+    var pharmacy = GetPharmacyById(pharmacyId);
+    var drug = _dbContext
+        .Drugs
+        .FirstOrDefault(d => d.Id == drugId);
+    if(drug is null)
+    {
+        throw new NotFoundException($"Drug with id: {drugId} not found");
+    }
+
+
+    drug.AmountOfPackages = dto.AmountOfPackages;
+    drug.Price = dto.Price;
+
+
+    _dbContext.SaveChanges();
+}
+*/
