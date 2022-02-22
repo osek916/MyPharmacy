@@ -15,7 +15,7 @@ namespace MyPharmacy.Services
     {
         PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query);
         PagedResult<SearchEngineDrugInformationDto> GetDrugInformations(SearchEngineDrugInformationQuery query);
-        PagedResult<SearchEngineDrugDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query);
+        PagedResult<SearchEnginePharmacyDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query);
     }
 
     public class SearchEngineService : ISearchEngineService
@@ -30,32 +30,42 @@ namespace MyPharmacy.Services
             _logger = logger;
             _dbContext = dbContext;
         }
-        public PagedResult<SearchEngineDrugDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query)
-        {
-
+        public PagedResult<SearchEnginePharmacyDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query)
+        {           
             var baseQuery = _dbContext
-                .Drugs
-                .Include(d => d.DrugInformation)
-                .Include(p => p.Pharmacy)
-                .ThenInclude(a => a.Address)
-                .Where(d => d.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower()));
-                
+                .Pharmacies
+                .Include(a => a.Address)
+                .Include(d => d.Drugs)
+                .ThenInclude(d => d.DrugInformation)
+                .Where(d => d.Drugs.Any(dd => dd.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) 
+                || dd.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
-            if(query.City != null)
+            if (query.City != null)
             {
-                baseQuery = baseQuery.Where(d => d.Pharmacy.Address.City.ToLower().Contains(query.City.ToLower())).OrderBy(a => a.Pharmacy.Address.City); ;
+                baseQuery = baseQuery.Where(d => d.Address.City.ToLower().Contains(query.City.ToLower()));
+            }
+            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
+            {              
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.Name);
+                else
+                    baseQuery.OrderByDescending(d => d.Name);
             }
             else
-                baseQuery = baseQuery.OrderBy(a => a.DrugInformation.DrugsName);
+            {
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.Address.City);
+                else
+                    baseQuery.OrderByDescending(d => d.Address.City);
+            }
 
-            var drugs = baseQuery
+            var pharmacies = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize).ToList();
             var totalItemsCount = baseQuery.Count();
+            var pharmacyDtos = _mapper.Map<List<SearchEnginePharmacyDto>>(pharmacies);
 
-            var drugDtos = _mapper.Map<List<SearchEngineDrugDto>>(drugs);
-
-            var result = new PagedResult<SearchEngineDrugDto>(drugDtos, totalItemsCount, query.PageSize, query.PageNumber);
+            var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
 
         }
@@ -70,18 +80,33 @@ namespace MyPharmacy.Services
                 d.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))).Where(d => d.PrescriptionRequired == query.PrescriptionRequired);
 
             if (query.DrugSortBy == DrugSortBy.DrugName)
-                baseQuery.OrderBy(d => d.DrugsName);
-            else
-                baseQuery.OrderBy(d => d.SubstancesName);
+            {
+                if (query.GetByChar != '0')
+                    baseQuery = baseQuery.Where(d => d.DrugsName.StartsWith(query.GetByChar.ToString()));
 
-            var drugs = baseQuery
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.DrugsName);
+                else
+                    baseQuery.OrderByDescending(d => d.DrugsName);
+            }
+            else
+            {
+                if (query.GetByChar != '0')
+                    baseQuery = baseQuery.Where(d => d.SubstancesName.StartsWith(query.GetByChar.ToString()));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.SubstancesName);
+                else
+                    baseQuery.OrderByDescending(d => d.SubstancesName);
+            }
+
+            var drugInformations = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize).ToList();
             var totalItemsCount = baseQuery.Count();
-            var drugInformationDtos = _mapper.Map<List<SearchEngineDrugInformationDto>>(drugs);
+            var drugInformationDtos = _mapper.Map<List<SearchEngineDrugInformationDto>>(drugInformations);
             var result = new PagedResult<SearchEngineDrugInformationDto>(drugInformationDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
-
         }
 
         public PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
@@ -92,10 +117,26 @@ namespace MyPharmacy.Services
                 .Where(p => query.Phrase == null || (p.Address.City.ToLower().Contains(query.Phrase.ToLower()) || 
                 p.Name.ToLower().Contains(query.Phrase.ToLower())) && p.HasPresciptionDrugs == query.HasPresciptionDrugs);
 
-            if (query.PharmaciesSortBy == PharmaciesSortBy.City)
-                baseQuery.OrderBy(p => p.Address.City);
-            else 
-                baseQuery.OrderBy(p => p.Name);
+            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
+            {
+                if (query.GetByChar != '0')
+                    baseQuery = baseQuery.Where(p => p.Name.StartsWith(query.GetByChar.ToString()));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.Name);
+                else
+                    baseQuery.OrderByDescending(d => d.Name);
+            }
+            else
+            {
+                if (query.GetByChar != '0')
+                    baseQuery = baseQuery.Where(d => d.Address.City.StartsWith(query.GetByChar.ToString()));
+
+                if (query.SortDirection == SortDirection.ASC)
+                    baseQuery.OrderBy(d => d.Address.City);
+                else
+                    baseQuery.OrderByDescending(d => d.Address.City);
+            }
 
             var pharmacies = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
@@ -106,11 +147,5 @@ namespace MyPharmacy.Services
             var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
         }
-
-
-
-
-
-
     }
 }

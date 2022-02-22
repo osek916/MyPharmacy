@@ -54,9 +54,7 @@ namespace MyPharmacy
                     _dbContext.Pharmacies.AddRange(pharmacies);
                     _dbContext.SaveChanges();
                 }
-
             }
-
         }
 
         

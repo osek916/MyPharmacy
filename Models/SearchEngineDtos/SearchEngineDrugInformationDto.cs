@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyPharmacy.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +16,6 @@ namespace MyPharmacy.Models
         public int MilligramsPerTablets { get; set; }
         public bool LumpSumDrug { get; set; } 
         public bool PrescriptionRequired { get; set; }
-
-        public List<string>  DrugCategories { get; set; }
 
     }
     

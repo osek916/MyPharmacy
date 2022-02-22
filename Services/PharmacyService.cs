@@ -49,21 +49,21 @@ namespace MyPharmacy.Services
                 .Include(x => x.Address)
                 .Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
-
             if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
             {
                 if (query.GetByChar != '0')
-                    pharmacies = pharmacies.Where(p => p.Name.StartsWith(query.GetByChar));
+                    pharmacies = pharmacies.Where(p => p.Name.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     pharmacies.OrderBy(d => d.Name);
                 else
                     pharmacies.OrderByDescending(d => d.Name);
             }
+            
             else
             {
                 if (query.GetByChar != '0')
-                    pharmacies = pharmacies.Where(d => d.Address.City.StartsWith(query.GetByChar));
+                    pharmacies = pharmacies.Where(d => d.Address.City.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     pharmacies.OrderBy(d => d.Address.City);

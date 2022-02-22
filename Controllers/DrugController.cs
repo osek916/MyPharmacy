@@ -55,7 +55,6 @@ namespace MyPharmacy.Controllers
         }
 
         
-
         [HttpDelete("{drugId}")]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult DeleteById([FromRoute]int pharmacyId, [FromRoute]int drugId)
@@ -63,7 +62,6 @@ namespace MyPharmacy.Controllers
             _drugService.DeletedById(pharmacyId, drugId);
             return NoContent();
         }
-
         
 
         [HttpDelete]
@@ -73,11 +71,6 @@ namespace MyPharmacy.Controllers
             _drugService.DeletedAllDrugsPharmacyWithId(pharmacyId);
             return NoContent();
         }
-
-
-
-
-
 
 
 

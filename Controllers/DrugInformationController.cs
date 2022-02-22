@@ -53,8 +53,6 @@ namespace MyPharmacy.Controllers
         {
             _drugInformationService.DeleteById(id);
             return NoContent();
-        }
-
-        
+        }      
     }
 }

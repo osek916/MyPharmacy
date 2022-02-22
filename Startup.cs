@@ -33,11 +33,10 @@ namespace MyPharmacy
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var authenticationSettings = new AuthenticationSettings();
-            Configuration.GetSection("Authentication").Bind(authenticationSettings); //binduje z appsetting.json do powy¿szego obiektu
+            Configuration.GetSection("Authentication").Bind(authenticationSettings); 
 
             services.AddSingleton(authenticationSettings);
             services.AddAuthentication(option =>
@@ -47,13 +46,13 @@ namespace MyPharmacy
                 option.DefaultChallengeScheme = "Bearer";
             }).AddJwtBearer(cfg =>
             {
-                cfg.RequireHttpsMetadata = false; //nie wymuszamy tylko protoko³u HTTPS
-                cfg.SaveToken = true;             //zapisuje token po stronie serwera
+                cfg.RequireHttpsMetadata = false; 
+                cfg.SaveToken = true;             
                 cfg.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = authenticationSettings.JwtIssuer,
-                    ValidAudience = authenticationSettings.JwtIssuer, //jakie podmioty mog¹ u¿ywaæ tego tokenu. Generujemy je tylko w obrêbie tej aplikacji 
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) //klucz prywatny wygenerowany na podstawie klucza z appsetting.json
+                    ValidAudience = authenticationSettings.JwtIssuer, 
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) 
                 };
             });
 
@@ -78,10 +77,10 @@ namespace MyPharmacy
             services.AddScoped<IValidator<UpdateDrugInformationDto>, UpdateDrugInformationDtoValidator>();
             services.AddScoped<IValidator<UpdatePharmacyDto>, UpdatePharmacyDtoValidator>();
             services.AddScoped<IUserContextService, UserContextService>();
-            services.AddHttpContextAccessor();//pozwala na wstrzykniêcie do konstruktora UserContextService => IHttpContextAccessor
+            services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
-            /*
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("ClientFront", builder =>
@@ -90,13 +89,12 @@ namespace MyPharmacy
                     .WithOrigins("http://localhost:8080")
 
                 );
-            });*/
+            });
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)
         {
-            /* app.UseCors("ClientFront"); */
+            app.UseCors("ClientFront"); 
             seeder.Seed();
             if (env.IsDevelopment())
             {
@@ -106,7 +104,6 @@ namespace MyPharmacy
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseSwagger();
-            //Dodawanie interfejsu
             app.UseSwaggerUI(s =>
             {
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPharmacy API");

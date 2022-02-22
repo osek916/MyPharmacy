@@ -33,19 +33,23 @@ namespace MyPharmacy.Services
 
         public PagedResult<DrugCategoryDto> GetAll(DrugCategoryGetAllQuery query)
         {
-            var drugCategories = _dbContext
+            IQueryable<DrugCategory> drugCategories = _dbContext
                 .DrugCategories;
+
+            if (query.GetByChar != '0')
+                drugCategories = drugCategories.Where(d => d.CategoryName.StartsWith(query.GetByChar.ToString()));
 
             if (query.SortDirection == SortDirection.ASC)
                 drugCategories.OrderBy(d => d.CategoryName);
             else
                 drugCategories.OrderByDescending(d => d.CategoryName);
+      
 
             var finalDrugCategories = drugCategories
                .Skip((query.PageNumber - 1) * query.PageSize)
                .Take(query.PageSize).ToList();
             var totalItemsCount = drugCategories.Count();
-            var drugCategoriesDtos = _mapper.Map<List<DrugCategoryDto>>(drugCategories);
+            var drugCategoriesDtos = _mapper.Map<List<DrugCategoryDto>>(finalDrugCategories);
 
             var result = new PagedResult<DrugCategoryDto>(drugCategoriesDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;

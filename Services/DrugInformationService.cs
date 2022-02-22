@@ -43,7 +43,7 @@ namespace MyPharmacy.Services
             if (query.DrugSortBy == DrugSortBy.DrugName)
             {
                 if (query.GetByChar != '0')
-                    drugInformations = drugInformations.Where(d => d.DrugsName.StartsWith(query.GetByChar));
+                    drugInformations = drugInformations.Where(d => d.DrugsName.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     drugInformations.OrderBy(d => d.DrugsName);
@@ -53,7 +53,7 @@ namespace MyPharmacy.Services
             else
             {
                 if (query.GetByChar != '0')
-                    drugInformations = drugInformations.Where(d => d.SubstancesName.StartsWith(query.GetByChar));
+                    drugInformations = drugInformations.Where(d => d.SubstancesName.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     drugInformations.OrderBy(d => d.SubstancesName);

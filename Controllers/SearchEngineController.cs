@@ -20,7 +20,10 @@ namespace MyPharmacy.Controllers
         {
             _searchEngineService = searchEngineService;
         }
-
+        
+        //searchengine only returns non-sensitive data that can be customized during application development
+        
+        
         //Zwraca same apteki wedle zapytania
         //Działa
         [HttpGet("pharmacy")]
@@ -40,7 +43,7 @@ namespace MyPharmacy.Controllers
         }
          
         
-        [HttpGet("drug")]
+        [HttpGet("pharmacywithdrug")]
         public ActionResult<PagedResult<SearchEngineDrugDto>> GetPharmaciesWithDrug([FromQuery] SearchEngineDrugQuery query)
         {
             var searchEngineDrugDtos = _searchEngineService.GetPharmaciesWithDrugs(query);

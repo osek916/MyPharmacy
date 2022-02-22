@@ -61,11 +61,12 @@ namespace MyPharmacy.Services
                 .Include(d => d.DrugInformation)
                 .Where(d => d.PharmacyId == pharmacyId && (query.Phrase == null || (d.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))));
 
+     
 
             if (query.DrugSortBy == DrugSortBy.DrugName)
             {
                 if (query.GetByChar != '0')
-                    drugs = drugs.Where(d => d.DrugInformation.DrugsName.StartsWith(query.GetByChar));
+                    drugs = drugs.Where(d => d.DrugInformation.DrugsName.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     drugs.OrderBy(d => d.DrugInformation.DrugsName);
@@ -75,7 +76,7 @@ namespace MyPharmacy.Services
             else
             {
                 if (query.GetByChar != '0')
-                    drugs = drugs.Where(d => d.DrugInformation.SubstancesName.StartsWith(query.GetByChar));
+                    drugs = drugs.Where(d => d.DrugInformation.SubstancesName.StartsWith(query.GetByChar.ToString()));
 
                 if (query.SortDirection == SortDirection.ASC)
                     drugs.OrderBy(d => d.DrugInformation.SubstancesName);

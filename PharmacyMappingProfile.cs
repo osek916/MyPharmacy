@@ -12,14 +12,12 @@ namespace MyPharmacy
     {
         public PharmacyMappingProfile()
         {
-            //mapuje z --> do
+            //mapping from --> to
             CreateMap<Pharmacy, PharmacyDto>()
                 .ForMember(p => p.City, pd => pd.MapFrom(g => g.Address.City))
                 .ForMember(p => p.Street, pd => pd.MapFrom(g => g.Address.Street))
                 .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
-
            
-
             CreateMap<PharmacyDto, Pharmacy>();
 
             CreateMap<CreatePharmacyDto, Pharmacy>()
@@ -38,7 +36,6 @@ namespace MyPharmacy
                 .ForMember(d => d.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired));
 
 
-
             CreateMap<Drug, UpdateDrugDto>();
 
 
@@ -48,7 +45,6 @@ namespace MyPharmacy
                 .ForMember(p => p.PostalCode, pd => pd.MapFrom(g => g.Address.PostalCode));
 
             CreateMap<DrugInformation, SearchEngineDrugInformationDto>()
-                .ForMember(d => d.DrugCategories, dd => dd.MapFrom(g => g.DrugCategories))
                 .ForMember(d => d.Description, dd => dd.MapFrom(g => g.Description));
 
             CreateMap<Pharmacy, SearchEngineDrugDto>();
@@ -74,7 +70,6 @@ namespace MyPharmacy
             CreateMap<UpdateDrugCategoryDto, DrugCategory>();
 
             CreateMap<User, UserDto>();
-
         }
     }
 }

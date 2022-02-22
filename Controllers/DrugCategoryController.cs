@@ -49,8 +49,6 @@ namespace MyPharmacy.Controllers
         {
             _drugCategoryService.DeleteById(id);
             return NoContent();
-        }
-
-        
+        }        
     }
 }
