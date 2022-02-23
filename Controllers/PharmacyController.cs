@@ -29,9 +29,7 @@ namespace MyPharmacy.Controllers
             return Ok(pharmaciesDtos);
         }
 
-        //PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
-        //DO ZROBIENIA
-        //ADMIN
+        
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<PharmacyDto> GetOne([FromRoute] int id)

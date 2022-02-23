@@ -19,12 +19,6 @@ namespace MyPharmacy.Services
         void DeletedById(int pharmacyId, int drugId);
         void DeletedAllDrugsPharmacyWithId(int pharmacyId); 
         void Update(int pharmacyId,  UpdateDrugDto dto);
-        //IEnumerable<DrugDto> GetAllByCategory(int pharmacyId, DrugQuery query);
-
-
-       // IEnumerable<DrugDto> GetAllByNameOfSubstance(int pharmacyId, string nameOfSubstance);
-       // IEnumerable<DrugDto> GetAllByNameOfDrug(int pharmacyId, string nameOfDrug);
-
     }
 
     public class DrugService : IDrugService
@@ -155,20 +149,7 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
 
-        
-        
-        
-
-
-
-
-
-        
-
-        
-
-        
-
+       
         public void DeletedAllDrugsPharmacyWithId(int pharmacyId)
         {
             if (pharmacyId < 1)
@@ -209,7 +190,7 @@ namespace MyPharmacy.Services
 
         }
 
-        public Drug GetDrugWithAdminPrivilege(int drugId)
+        private Drug GetDrugWithAdminPrivilege(int drugId)
         {
             if (drugId < 1)
             {

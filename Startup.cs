@@ -21,6 +21,7 @@ using MyPharmacy.Models.Validators;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using MyPharmacy.Models.UserDtos;
 
 namespace MyPharmacy
 {
@@ -55,7 +56,7 @@ namespace MyPharmacy
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)) 
                 };
             });
-
+            
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<PharmacyDbContext>();
             services.AddAutoMapper(this.GetType().Assembly);
@@ -76,6 +77,8 @@ namespace MyPharmacy
             services.AddScoped<IValidator<UpdateDrugDto>, UpdateDrugDtoValidator > ();
             services.AddScoped<IValidator<UpdateDrugInformationDto>, UpdateDrugInformationDtoValidator>();
             services.AddScoped<IValidator<UpdatePharmacyDto>, UpdatePharmacyDtoValidator>();
+            services.AddScoped<IValidator<UpdateUserDtoWithRole>, UpdateUserDtoWithRoleValidator>();
+            services.AddScoped<IValidator<UpdateUserDto>, UpdateUserDtoValidator>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();
