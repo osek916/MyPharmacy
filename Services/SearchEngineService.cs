@@ -7,6 +7,7 @@ using MyPharmacy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace MyPharmacy.Services
@@ -30,34 +31,32 @@ namespace MyPharmacy.Services
             _logger = logger;
             _dbContext = dbContext;
         }
+       
+
         public PagedResult<SearchEnginePharmacyDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query)
-        {           
+        {
             var baseQuery = _dbContext
                 .Pharmacies
                 .Include(a => a.Address)
                 .Include(d => d.Drugs)
                 .ThenInclude(d => d.DrugInformation)
-                .Where(d => d.Drugs.Any(dd => dd.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) 
+                .Where(d => d.Drugs.Any(dd => dd.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower())
                 || dd.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
-            if (query.City != null)
-            {
+            if (query.City != null) 
                 baseQuery = baseQuery.Where(d => d.Address.City.ToLower().Contains(query.City.ToLower()));
-            }
-            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
-            {              
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.Name);
-                else
-                    baseQuery.OrderByDescending(d => d.Name);
-            }
-            else
+            
+            var selector = new Dictionary<string, Expression<Func<Pharmacy, object>>>
             {
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.Address.City);
-                else
-                    baseQuery.OrderByDescending(d => d.Address.City);
-            }
+                {nameof(Pharmacy.Name), p => p.Name},
+                {nameof(Pharmacy.Address.City), p => p.Address.City }
+            };
+
+            if (query.SortDirection == SortDirection.ASC)
+                baseQuery = baseQuery.OrderBy(selector[query.SortBy]);
+
+            else
+                baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
 
             var pharmacies = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
@@ -67,8 +66,8 @@ namespace MyPharmacy.Services
 
             var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
-
         }
+
 
         public PagedResult<SearchEngineDrugInformationDto> GetDrugInformations(SearchEngineDrugInformationQuery query)
         {
@@ -77,29 +76,21 @@ namespace MyPharmacy.Services
                 .DrugInformations
                 .Include(d => d.DrugCategories)
                 .Where(d => query.Phrase == null || (d.DrugsName.ToLower().Contains(query.Phrase.ToLower()) ||
-                d.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))).Where(d => d.PrescriptionRequired == query.PrescriptionRequired);
+                d.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
-            if (query.DrugSortBy == DrugSortBy.DrugName)
+
+            var selector = new Dictionary<string, Expression<Func<DrugInformation, object>>>
             {
-                if (query.GetByChar != '0')
-                    baseQuery = baseQuery.Where(d => d.DrugsName.StartsWith(query.GetByChar.ToString()));
+                {nameof(DrugInformation.DrugsName), d => d.DrugsName},
+                {nameof(DrugInformation.SubstancesName), d => d.SubstancesName }
+            };
 
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.DrugsName);
-                else
-                    baseQuery.OrderByDescending(d => d.DrugsName);
-            }
+            if (query.SortDirection == SortDirection.ASC)
+                baseQuery = baseQuery.OrderBy(selector[query.SortBy]);
+
             else
-            {
-                if (query.GetByChar != '0')
-                    baseQuery = baseQuery.Where(d => d.SubstancesName.StartsWith(query.GetByChar.ToString()));
-
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.SubstancesName);
-                else
-                    baseQuery.OrderByDescending(d => d.SubstancesName);
-            }
-
+                baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
+            
             var drugInformations = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize).ToList();
@@ -109,6 +100,7 @@ namespace MyPharmacy.Services
             return result;
         }
 
+
         public PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
         {
             var baseQuery = _dbContext
@@ -117,26 +109,18 @@ namespace MyPharmacy.Services
                 .Where(p => query.Phrase == null || (p.Address.City.ToLower().Contains(query.Phrase.ToLower()) || 
                 p.Name.ToLower().Contains(query.Phrase.ToLower())) && p.HasPresciptionDrugs == query.HasPresciptionDrugs);
 
-            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
+            var selector = new Dictionary<string, Expression<Func<Pharmacy, object>>>
             {
-                if (query.GetByChar != '0')
-                    baseQuery = baseQuery.Where(p => p.Name.StartsWith(query.GetByChar.ToString()));
+                {nameof(Pharmacy.Name), p => p.Name},
+                {nameof(Pharmacy.Address.City), p => p.Address.City }
+            };
+            
+            if (query.SortDirection == SortDirection.ASC)
+                baseQuery = baseQuery.OrderBy(selector[query.SortBy]);
 
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.Name);
-                else
-                    baseQuery.OrderByDescending(d => d.Name);
-            }
             else
-            {
-                if (query.GetByChar != '0')
-                    baseQuery = baseQuery.Where(d => d.Address.City.StartsWith(query.GetByChar.ToString()));
-
-                if (query.SortDirection == SortDirection.ASC)
-                    baseQuery.OrderBy(d => d.Address.City);
-                else
-                    baseQuery.OrderByDescending(d => d.Address.City);
-            }
+                baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
+            
 
             var pharmacies = baseQuery
                 .Skip((query.PageNumber - 1) * query.PageSize)
@@ -149,3 +133,4 @@ namespace MyPharmacy.Services
         }
     }
 }
+

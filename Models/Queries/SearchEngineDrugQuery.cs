@@ -1,4 +1,5 @@
-﻿using MyPharmacy.Models.Interfaces;
+﻿using MyPharmacy.Entities;
+using MyPharmacy.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,13 +8,9 @@ using System.Threading.Tasks;
 
 namespace MyPharmacy.Models
 {
-    public class SearchEngineDrugQuery : ISortByDirection, IPagination
+    public class SearchEngineDrugQuery : SortParameters, IPagination, ISortByDirection, ISortBy
     {
-        public string City { get; set; } 
-        public SortDirection SortDirection { get; set; } = SortDirection.ASC;
-        public PharmaciesSortBy PharmaciesSortBy { get; set; } = PharmaciesSortBy.Name;
-        public string Phrase { get; set; } = "";
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public string City { get; set; }
+        public string SortBy { get; set; } = nameof(Pharmacy.Name);
     }
 }

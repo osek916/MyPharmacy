@@ -22,6 +22,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MyPharmacy.Models.UserDtos;
+using MyPharmacy.Models.Validators.SearchEngine;
 
 namespace MyPharmacy
 {
@@ -83,9 +84,12 @@ namespace MyPharmacy
             services.AddScoped<IValidator<UpdateUserDtoWithRole>, UpdateUserDtoWithRoleValidator>();
             services.AddScoped<IValidator<UpdateUserDto>, UpdateUserDtoValidator>();
             services.AddScoped<IValidator<UpdateUserRoleAndPharmacyId>, UpdateUserRoleAndPharmacyIdValidator>();
-
+            services.AddScoped<IValidator<SearchEngineDrugInformationQuery>, SearchEngineDrugInformationQueryValidator>();
+            services.AddScoped<IValidator<SearchEnginePharmacyQuery>, SearchEnginePharmacyQueryValidator>();
+            services.AddScoped<IValidator<SearchEngineDrugQuery>, SearchEngineDrugQueryValidator>();
+            services.AddScoped<IValidator<SortParameters>, SortParametersValidator>();
             services.AddScoped<IUserContextService, UserContextService>();
-            services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor
+            services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
             
