@@ -5,6 +5,7 @@ using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
 using MyPharmacy.Models;
 using MyPharmacy.Models.Enums;
+using MyPharmacy.Models.Interfaces;
 using MyPharmacy.Models.Queries;
 using MyPharmacy.Models.UserDtos;
 using System;
@@ -20,9 +21,11 @@ namespace MyPharmacy.Services
         public PagedResult<UserDto> GetAll(UserGetAllQuery query);
         public UserDto GetById(int userId);
         public UserDto GetSelfAccount();
-        public void UpdateById(UpdateUserDto dto, int userId);
-        public void DeleteById(int id);
-
+        public void DeleteById(int userId);
+        public void UpdateByIdWithRole(UpdateUserDtoWithRole dto, int id);
+        public void UpdateSelfAccount(UpdateUserDto dto);
+        public void UpdatePrivilegesById(UpdateUserRoleAndPharmacyId dto, int id);
+        
     }
 
     public class UserService : IUserService
@@ -59,6 +62,9 @@ namespace MyPharmacy.Services
 
             if (query.UserSortBy == UserSortBy.City)
             {
+                if (query.GetByChar != '0')
+                    users = users.Where(p => p.Pharmacy.Address.City.StartsWith(query.GetByChar.ToString()));
+
                 if (query.SortDirection == SortDirection.ASC)
                     users.OrderBy(u => u.Pharmacy.Address.City);
                 else
@@ -66,6 +72,9 @@ namespace MyPharmacy.Services
             }
             else
             {
+                if (query.GetByChar != '0')
+                    users = users.Where(p => p.LastName.StartsWith(query.GetByChar.ToString()));
+
                 if (query.SortDirection == SortDirection.ASC)
                     users.OrderBy(u => u.LastName);
                 else
@@ -83,52 +92,104 @@ namespace MyPharmacy.Services
             return result;
         }
 
-        public UpdateByAdmin
-
-
-        public UserDto GetById(int userId)
+        public void UpdateByIdWithRole(UpdateUserDtoWithRole dto, int id)
         {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+           
+            if(user == null)
+            {
+                throw new NotFoundException($"User with id {id} not found");
+            }
+            
+            user = AssignNewDataToUser(dto, user);
+            if (dto.PharmacyId != null)
+                user.PharmacyId = dto.PharmacyId;
 
+                user.RoleId = dto.RoleId;
+            _dbContext.SaveChanges();
         }
 
+        public void UpdatePrivilegesById(UpdateUserRoleAndPharmacyId dto, int id)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+            if (user is null)
+            {
+                throw new NotFoundException($"User with id {id} not found");
+            }
+
+            if (_userContextService.Role == "Manager")
+            {
+                if (user.PharmacyId is null)
+                {
+                    user.PharmacyId = _userContextService.PharmacyId;
+                }
+                else
+                {
+                    if (_userContextService.PharmacyId == user.PharmacyId)
+                        throw new ForbiddenException($"You dont have a permission to update this user");
+                }
+            }
+            else
+            {
+                if (dto.PharmacyId != null)
+                {
+                    user.PharmacyId = dto.PharmacyId;
+                }
+            }
+            user.RoleId = dto.RoleId;
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateSelfAccount(UpdateUserDto dto)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == _userContextService.GetUserId);
+            if (user == null)
+                throw new NotFoundException("Your account was changed during the session");
+
+            user = AssignNewDataToUser(dto, user);
+            _dbContext.SaveChanges();
+        }
+     
         public UserDto GetSelfAccount()
         {
+            var user = _dbContext.Users.First(u => u.Id == _userContextService.GetUserId);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
+            
 
         }
-
-
-        public void UpdateById(UpdateUserDto dto, int userId)
+        public UserDto GetById(int userId)
         {
-            if (drugCategoryId < 0)
-                throw new BadRequestException($"DrugCategory Id must be greater than 0");
-
-            var drugCategory = _dbContext
-                .DrugCategories
-                .FirstOrDefault(d => d.Id == drugCategoryId);
-
-            if (drugCategory is null)
-                throw new NotFoundException($"DrugInformation with id: {drugCategoryId} not found");
-
-            drugCategory.CategoryName = dto.CategoryName;
-            drugCategory.Description = dto.Description;
-            _dbContext.SaveChanges();
-        }
-
-
-        public void DeleteById(int id)
-        {
-            var drugCategory = _dbContext
-                .DrugCategories
-                .FirstOrDefault(d => d.Id == id);
-
-            if (drugCategory is null)
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            if(user is null)
             {
-                throw new NotFoundException($"DrugCategory with id: {id} not found");
+                throw new NotFoundException($"User with this Id: {userId} doesn't exist");
             }
-            _dbContext.DrugCategories.Remove(drugCategory);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
+        }
+
+        public void DeleteById(int userId)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            if (user is null)
+            {
+                throw new NotFoundException($"User with this Id: {userId} doesn't exist");
+            }
+            _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
         }
 
-    }
+        private User AssignNewDataToUser(IUpdateUserDto dto, User user)
+        {
+            user.Email = dto.Email;
+            user.DateOfBirth = dto.DateOfBirth;
+            user.FirstName = dto.FirstName;
+            user.Gender = dto.Gender;
+            user.LastName = dto.LastName;
+            user.Nationality = dto.Nationality;
 
+            return user;
+        }
+    }
 }

@@ -10,6 +10,5 @@ namespace MyPharmacy.Models
     {
         public int AmountOfPackages { get; set; }
         public decimal Price { get; set; }
-        public int OptionalId { get; set; } = 0;
     }
 }

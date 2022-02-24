@@ -9,23 +9,20 @@ using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators
 {
-   
-
-    public class UpdateUserDtoWithRoleValidator : AbstractValidator<UpdateUserDtoWithRole>
+    public class UpdateUserRoleAndPharmacyIdValidator : AbstractValidator<UpdateUserRoleAndPharmacyId>
     {
-
         private int[] allowedRoleId = new[] { 1, 2, 3, 4 };
-        
-        public UpdateUserDtoWithRoleValidator(PharmacyDbContext dbContext, IUserContextService userContextService) 
+
+        public UpdateUserRoleAndPharmacyIdValidator(PharmacyDbContext dbContext, IUserContextService userContextService)
         {
             RuleFor(x => x.RoleId).Custom((value, context) =>
             {
-                if(allowedRoleId.Contains(value))
+                if (!allowedRoleId.Contains(value))
                 {
                     context.AddFailure("RoleId", $"RoleId must be one of these values: {string.Join(", ", allowedRoleId)}");
                 }
 
-                if(userContextService.Role != "Admin" && (value == 3 || value == 4))
+                if (userContextService.Role != "Admin" && (value == 3 || value == 4))
                 {
                     context.AddFailure("RoleId", "Your account doesn't have sufficient permissions");
                 }

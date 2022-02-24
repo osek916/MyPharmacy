@@ -1,13 +1,11 @@
-﻿using MyPharmacy.Models.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyPharmacy.Models.UserDtos
+namespace MyPharmacy.Models.Interfaces
 {
-    public class UpdateUserDto : IUpdateUserDto
+    public interface IUpdateUserDto
     {
         public string Email { get; set; }
         public string FirstName { get; set; }

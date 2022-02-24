@@ -15,6 +15,5 @@ namespace MyPharmacy.Models
         public int MilligramsPerTablets { get; set; }
         public bool LumpSumDrug { get; set; }
         public bool PrescriptionRequired { get; set; }
-        public List<string> DrugCategoryNames { get; set; }
     }
 }

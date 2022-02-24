@@ -66,8 +66,11 @@ namespace MyPharmacy
             services.AddScoped<IDrugInformationService, DrugInformationService>();
             services.AddScoped<IDrugCategoryService, DrugCategoryService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            //Validators
             services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
             services.AddScoped<IValidator<CreateDrugCategoryDto>, CreateDrugCategoryDtoValidator>();
             services.AddScoped<IValidator<CreateDrugDto>, CreateDrugDtoValidator>();
@@ -79,6 +82,8 @@ namespace MyPharmacy
             services.AddScoped<IValidator<UpdatePharmacyDto>, UpdatePharmacyDtoValidator>();
             services.AddScoped<IValidator<UpdateUserDtoWithRole>, UpdateUserDtoWithRoleValidator>();
             services.AddScoped<IValidator<UpdateUserDto>, UpdateUserDtoValidator>();
+            services.AddScoped<IValidator<UpdateUserRoleAndPharmacyId>, UpdateUserRoleAndPharmacyIdValidator>();
+
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor
             services.AddScoped<PharmacySeeder>();

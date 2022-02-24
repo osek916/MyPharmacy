@@ -19,9 +19,17 @@ namespace MyPharmacy.Models.Validators
                     {
                         context.AddFailure("AmountOfPackages", "The number of packages must not be less than 0");
                     }
-                });
+                })
+                .NotEmpty();
 
             RuleFor(x => x.Price)
+                .Custom((value, context) =>
+                {
+                    if(value < 0)
+                    {
+                        context.AddFailure("Price", "The price must not be less than 0");
+                    }
+                })
                 .NotEmpty();
 
         }

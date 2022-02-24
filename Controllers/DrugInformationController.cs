@@ -41,7 +41,7 @@ namespace MyPharmacy.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult Update([FromQuery] UpdateDrugInformationDto dto, int id)
+        public ActionResult Update([FromBody] UpdateDrugInformationDto dto, int id)
         {
             _drugInformationService.UpdateById(dto, id);
             return Ok();

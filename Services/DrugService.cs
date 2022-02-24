@@ -18,7 +18,7 @@ namespace MyPharmacy.Services
         int Create(int pharmacyId, CreateDrugDto dto);
         void DeletedById(int pharmacyId, int drugId);
         void DeletedAllDrugsPharmacyWithId(int pharmacyId); 
-        void Update(int pharmacyId,  UpdateDrugDto dto);
+        void Update(int pharmacyId,  int drugId, UpdateDrugDto dto);
     }
 
     public class DrugService : IDrugService
@@ -103,14 +103,13 @@ namespace MyPharmacy.Services
                 throw new BadRequestException($"Bad drug parameters");
 
             var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => dto.DrugsName.ToLower() == d.DrugsName.ToLower() && dto.MilligramsPerTablets == d.MilligramsPerTablets &&
-            dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());
-
-            
+            dto.NumberOfTablets == d.NumberOfTablets && dto.SubstancesName.ToLower() == d.SubstancesName.ToLower());            
 
             if (drugInformation is null)
                 throw new NotFoundException($"Drug with this information parameters not found. Check the correctness of the entered data");
 
-            var pharmacy = GetPharmacyById(pharmacyId);
+            
+            var pharmacy = GetPharmacyById(pharmacyId, $"You dont have a permission to add Drugs to this pharmacy");
             if (pharmacy.HasPresciptionDrugs == false && drugInformation.PrescriptionRequired == true)
             {
                 throw new ForbiddenException($"Your pharmacy is not authorized to sell prescription drugs");
@@ -122,19 +121,14 @@ namespace MyPharmacy.Services
                 Price = dto.Price,
                 DrugInformationId = drugInformation.Id
             };
-
-            _dbContext.Drugs.Add(newDrug);
+            pharmacy.Drugs.Add(newDrug);
             _dbContext.SaveChanges();
             return newDrug.Id;
         }
 
-        
-
-        public void Update(int pharmacyId, UpdateDrugDto dto)
+        public void Update(int pharmacyId, int drugId, UpdateDrugDto dto)
         {
-
-            var drug = GetDrugWithAdminPrivilege(dto.OptionalId);
-
+            var drug = GetDrugWithAdminPrivilege(drugId);
             drug.AmountOfPackages = dto.AmountOfPackages;
             drug.Price = dto.Price;
 
@@ -164,6 +158,7 @@ namespace MyPharmacy.Services
                 }
             }
 
+            
             _logger.LogWarning($"Attempt to remove all drugs from the pharmacy with id: {pharmacyId}");
             var drugs = _dbContext.Drugs.Where(d => d.PharmacyId == pharmacyId);
             if(drugs is null)
@@ -174,9 +169,8 @@ namespace MyPharmacy.Services
             _dbContext.SaveChanges();
         }
 
-        private Pharmacy GetPharmacyById(int pharmacyId)
+        private Pharmacy GetPharmacyById(int pharmacyId, string errorMessage)
         {
-
             var pharmacy = _dbContext
                 .Pharmacies
                 .Include(p => p.Drugs)
@@ -184,7 +178,7 @@ namespace MyPharmacy.Services
 
             if (pharmacy is null)
             {
-                throw new NotFoundException($"Pharmacy with id: {pharmacyId} not exist");
+                throw new NotFoundException(errorMessage);
             }
             return pharmacy;
 
@@ -199,11 +193,12 @@ namespace MyPharmacy.Services
 
             var drug = _dbContext
                 .Drugs
+                .Include(d => d.DrugInformation)
                 .FirstOrDefault(d => d.Id == drugId);
-
+                
             if (_userContextService.Role != "Admin")
-            {
-                if (_userContextService.PharmacyId != drug.PharmacyId)
+            {              
+                if (drug is null || _userContextService.PharmacyId != drug.PharmacyId)
                 {
                     throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");
                 }

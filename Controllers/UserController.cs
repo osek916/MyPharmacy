@@ -25,9 +25,6 @@ namespace MyPharmacy.Controllers
         }
 
 
-
-        //ADMIN POBIERA KAŻDEGO
-        //MANAGER POBIERA TYLKO ZE SWOJEJ APTEKI FARMACEUTÓW
         [HttpGet]
         [Authorize(Roles = "Admin,Manager")]
         public ActionResult<PagedResult<UserDto>> GetAll([FromQuery] UserGetAllQuery query)
@@ -36,40 +33,31 @@ namespace MyPharmacy.Controllers
             return users;
         }
 
-
-        //UPDATE BY ADMIN WITH ALL PRIVILEGES
-        
-
-        //UPDATE BY MANAGER ALL FROM HIS FIRM
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Manager")]
-        public ActionResult UpdatePharmacist(UpdateUserDtoWithRole dto)
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateByIdWithRole(UpdateUserDtoWithRole dto, int id)
         {
-            _userService.UpdateWithRole();
+            _userService.UpdateByIdWithRole(dto, id);
             return Ok();
         }
 
-        //UPDATE SELF ACCOUNT
+        
+        [HttpPut("{id}/addprivileges")]
+        [Authorize(Roles = "Admin,Manager")]
+        public ActionResult UpdatePrivilegesById(UpdateUserRoleAndPharmacyId dto, int id)
+        {
+            _userService.UpdatePrivilegesById(dto, id);
+            return Ok();
+        }
+        
+
         [HttpPut()]
         [Authorize(Roles = "Admin,Manager,Pharmacist,User")]
         public ActionResult UpdateSelfAccount(UpdateUserDto dto)
         {
-            _userService.UpdateSelfAccount();
+            _userService.UpdateSelfAccount( dto);
             return Ok();
         }
-
-        
-
-        //[HttpPost]
-        //[Authorize(Roles = "Admin,Manager")]
-        //public ActionResult<CreateUserDtoWithRole>
-        //[HttpGet("administratorpanel")]
-        //[Authorize(Roles = "Admin")]
-        //public ActionResult<PagedResult<UserDto>> GetAllWithPrivilege([FromQuery] UserGetAllQuery query)
-        //{
-        //    var users = _userService.GetAllWithPrivilege(query);
-        //    return users;
-        //}
 
         [HttpGet("{userId}")]
         [Authorize(Roles = "Admin")]
@@ -85,9 +73,7 @@ namespace MyPharmacy.Controllers
         {
             var users = _userService.GetSelfAccount();
             return users;
-        }
-
-        
+        }      
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
@@ -96,7 +82,5 @@ namespace MyPharmacy.Controllers
             _userService.DeleteById(id);
             return NoContent();
         }
-
     }
-
 }

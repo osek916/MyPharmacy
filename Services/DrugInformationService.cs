@@ -93,25 +93,7 @@ namespace MyPharmacy.Services
 
             if (drugInformation is null)
                 throw new NotFoundException($"DrugInformation with id: {drugInformationId} not found");
-
-            var temporaryDrugCategories = new List<DrugCategory>();
-            if (dto.DrugCategoryNames.Count() != 0 && !(dto.DrugCategoryNames is null))
-            {
-                foreach (var item in dto.DrugCategoryNames)
-                {
-                    var categoryWithThisName = _dbContext.DrugCategories.FirstOrDefault(d => d.CategoryName.ToLower().Contains(item.ToLower()));
-                    if (!(categoryWithThisName is null))
-                    {
-                        temporaryDrugCategories.Add(categoryWithThisName);
-                    }
-                }
-                if (temporaryDrugCategories.Count != 0)
-                {
-                    drugInformation.DrugCategories = new List<DrugCategory>(temporaryDrugCategories);
-                    drugInformation.DrugCategories.AddRange(temporaryDrugCategories);
-                }
-            }
-
+             
             drugInformation.DrugsName = dto.DrugsName;
             drugInformation.Description = dto.Description;
             drugInformation.LumpSumDrug = dto.LumpSumDrug;
@@ -119,7 +101,6 @@ namespace MyPharmacy.Services
             drugInformation.NumberOfTablets = dto.NumberOfTablets;
             drugInformation.PrescriptionRequired = dto.PrescriptionRequired;
             drugInformation.SubstancesName = drugInformation.SubstancesName;
-
 
             _dbContext.SaveChanges();
         }
@@ -135,8 +116,6 @@ namespace MyPharmacy.Services
 
             _dbContext.DrugInformations.Remove(drugInformation);
             _dbContext.SaveChanges();
-        }
-
-        
+        }       
     }
 }

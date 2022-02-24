@@ -94,9 +94,6 @@ namespace MyPharmacy.Services
             }
             _dbContext.DrugCategories.Remove(drugCategory);
             _dbContext.SaveChanges();
-        }
-
-        
-
+        }      
     }
 }

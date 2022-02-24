@@ -23,7 +23,7 @@ namespace MyPharmacy.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User; //user istnieje dla zapytań z ustawioną autoryzacją i sprawdza "?" dla nulli unikając wyjątku dla klienta bez nagłówka autoryzacji
+        public ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User; 
         public int? GetUserId => User is null ? null : (int?)int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
         public string Role => User is null ? null : User.FindFirst(c => c.Type == ClaimTypes.Role).Value.ToString();
         public int? PharmacyId => User is null ? null : (int?)int.Parse(User.FindFirst(c => c.Type == "PharmacyId").Value);

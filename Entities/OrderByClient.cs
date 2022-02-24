@@ -11,7 +11,7 @@ namespace MyPharmacy.Entities
         public int Id { get; set; }       
         public DateTime DateOfOrder { get; set; }
         public DateTime? DateOfReceipt { get; set; }
-        public bool IsPersonalPickup { get; set; } //jeżeli true to ustawia adres z apteki
+        public bool IsPersonalPickup { get; set; }
         public decimal Price { get; set; }
 
         public int? StatusId { get; set; }
@@ -19,7 +19,7 @@ namespace MyPharmacy.Entities
         public int? UserId { get; set; }
         public virtual User User { get; set; }
         public int? AddressId { get; set; }
-        public virtual Address Address { get; set; } //jeżeli jest inny adres niż apteka to jest dostarczenie i zabrania się na receptę
+        public virtual Address Address { get; set; } 
         public virtual List<Drug> Drugs { get; set; }
     }
 }

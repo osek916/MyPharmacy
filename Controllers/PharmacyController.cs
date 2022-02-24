@@ -44,8 +44,6 @@ namespace MyPharmacy.Controllers
         }
 
 
-
-        //Manager tworzy TYLKO JEDNĄ aptekę
         [HttpPost]
         [Authorize(Roles = "Manager")]
         public ActionResult CreatePharmacy([FromBody] CreatePharmacyDto dto)
@@ -54,7 +52,7 @@ namespace MyPharmacy.Controllers
             return Created($"api/pharmacy/{id}", null);
         }
 
-        //Manager może edytować stworzoną przez siebie aptekę
+
         [HttpPut]
         [Authorize(Roles = "Admin, Manager")]
         public ActionResult Update([FromBody] UpdatePharmacyDto dto)
@@ -63,7 +61,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        //ADMIN
+        
         [HttpDelete]
         [Authorize(Roles = "Admin, Manager")]
         public ActionResult Delete([FromQuery]int bodyId)

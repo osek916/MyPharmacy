@@ -19,7 +19,7 @@ namespace MyPharmacy.Controllers
             _drugService = drugService;
         }
 
-
+        
         [HttpGet]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<PagedResult<DrugDto>> GetAll([FromRoute] int pharmacyId, [FromQuery] DrugGetAllQuery query)
@@ -27,7 +27,8 @@ namespace MyPharmacy.Controllers
             var drugsDto = _drugService.GetAll(pharmacyId, query);
             return Ok(drugsDto);
         }
-
+        
+        
         [HttpGet("{drugId}")]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<DrugDto> GetById([FromRoute] int pharmacyId, [FromRoute] int drugId)
@@ -35,7 +36,7 @@ namespace MyPharmacy.Controllers
             var drugDto = _drugService.GetById(pharmacyId, drugId);
             return drugDto;
         }
-
+        
 
         [HttpPost]
         [Authorize(Roles = "Manager")]
@@ -46,11 +47,11 @@ namespace MyPharmacy.Controllers
         }
 
 
-        [HttpPut()]
+        [HttpPut("{drugId}")]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
-        public ActionResult UpdateDrugById([FromRoute] int pharmacyId,  [FromBody] UpdateDrugDto dto)
+        public ActionResult Update([FromRoute] int pharmacyId, int drugId, [FromBody] UpdateDrugDto dto)
         {
-            _drugService.Update(pharmacyId,  dto);
+            _drugService.Update(pharmacyId, drugId,  dto);
             return Ok();
         }
 
@@ -71,40 +72,5 @@ namespace MyPharmacy.Controllers
             _drugService.DeletedAllDrugsPharmacyWithId(pharmacyId);
             return NoContent();
         }
-
-
-
-        /*
-        [HttpGet]
-        public ActionResult<IEnumerable<DrugDto>> GetAllByCategory([FromRoute]int pharmacyId, [FromQuery] DrugQuery query)
-        {
-            var drugsDto = _drugService.GetAllByCategory(pharmacyId, query);
-            return Ok(drugsDto);
-        }
-        
-        [HttpGet("substance/{nameOfSubstance}")]
-        public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfSubstance([FromRoute]int pharmacyId, [FromRoute]string nameOfSubstance)
-        {
-            var drugsDto = _drugService.GetAllByNameOfSubstance(pharmacyId, nameOfSubstance);
-            return Ok(drugsDto);
-        }
-
-        [HttpGet("drugname/{nameOfDrug}")]
-        public ActionResult<IEnumerable<DrugDto>> GetAllByNameOfDrug([FromRoute]int pharmacyId, [FromRoute]string nameOfDrug)
-        {
-            var drugsDto = _drugService.GetAllByNameOfDrug(pharmacyId, nameOfDrug);
-            return Ok(drugsDto);
-        }
-        */
-        /*
-         [HttpPut("{drugId}")]
-         [Authorize(Roles = "Admin, Manager")]
-         public ActionResult UpdateDrugById([FromRoute] int pharmacyId, [FromRoute]int drugId, [FromBody]UpdateDrugDto dto)
-         {
-             _drugService.UpdateDrugById(pharmacyId, drugId, dto);
-             return Ok();
-         }*/
-
-
     }
 }
