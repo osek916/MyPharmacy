@@ -23,6 +23,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MyPharmacy.Models.UserDtos;
 using MyPharmacy.Models.Validators.SearchEngine;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace MyPharmacy
 {
@@ -68,9 +70,10 @@ namespace MyPharmacy
             services.AddScoped<IDrugCategoryService, DrugCategoryService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IFileService, FileService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-
+            services.AddSingleton<FileExtensionContentTypeProvider>();
             //Validators
             services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
             services.AddScoped<IValidator<CreateDrugCategoryDto>, CreateDrugCategoryDtoValidator>();
@@ -102,10 +105,13 @@ namespace MyPharmacy
 
                 );
             });
+            //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PharmacyDb;Trusted_Connection=True;"));
+            //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PharmacyDbConnection")));
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)
         {
+            app.UseStaticFiles();
             app.UseCors("ClientFront"); 
             seeder.Seed();
             if (env.IsDevelopment())

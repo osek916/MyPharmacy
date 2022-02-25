@@ -19,6 +19,12 @@ namespace MyPharmacy
         {
             if (_dbContext.Database.CanConnect())
             {
+                var migrations = _dbContext
+                    .Database
+                    .GetPendingMigrations();
+                if (migrations.Any() && migrations != null)
+                    _dbContext.Database.Migrate();
+
 
                 if (!_dbContext.Roles.Any())
                 {

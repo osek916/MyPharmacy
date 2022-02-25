@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,7 +10,7 @@ namespace MyPharmacy.Entities
 {
     public class PharmacyDbContext : DbContext
     {
-        private string _connectionString = "Server=(localdb)\\mssqllocaldb;Database=PharmacyDb;Trusted_Connection=True;";
+        
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
@@ -55,11 +57,19 @@ namespace MyPharmacy.Entities
             modelBuilder.Entity<Address>()
                 .Property(a2 => a2.Street)
                 .IsRequired();
-        }
+        }    
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_connectionString);
+            if(!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.Development.json")
+                    .Build();
+                var connectionString = configuration.GetConnectionString("PharmacyDbConnection");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
     }
 }
