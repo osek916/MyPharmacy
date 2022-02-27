@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace MyPharmacy.Models
 {
-    public class PharmacyGetAllQuery  : ISortByDirection, ISortByChar, IPagination
+    public class PharmacyGetAllQuery  : SortParameters, IPagination, ISortByDirection
     {
         public bool HasPresciptionDrugs { get; set; } = true;
         public char GetByChar { get; set; } = '0';
-        public SortDirection SortDirection { get; set; } = SortDirection.ASC;
         public PharmaciesSortBy PharmaciesSortBy { get; set; } = PharmaciesSortBy.City;
-        public string Phrase { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
     }
 }

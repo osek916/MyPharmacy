@@ -34,12 +34,7 @@ namespace MyPharmacy.Controllers
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult<PharmacyDto> GetOne([FromRoute] int id)
         {
-            var pharmacyDto = _pharmacyService.GetOne(id);
-
-            if (pharmacyDto is null)
-            {
-                return NotFound();
-            }
+            var pharmacyDto = _pharmacyService.GetOne(id);         
             return pharmacyDto;
         }
 

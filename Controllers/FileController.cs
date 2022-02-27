@@ -39,50 +39,7 @@ namespace MyPharmacy.Controllers
             return Ok();      
         }
         
-
-
     }
 }
 
 
-/*
- * [HttpGet]
-        public ActionResult GetDrugLeaflet([FromQuery] string fileName)
-        {
-            var rootPath = Directory.GetCurrentDirectory();
-            var filePath = $"{rootPath}/MyFiles/DrugLeaflet/{fileName}";
-            var fileExists = System.IO.File.Exists(filePath);
-            if(!fileExists)     
-                return NotFound($"File with this name not exist");
-            
-            //var contentTypeProvider = new FileExtensionContentTypeProvider();
-            _contentTypeProvider.TryGetContentType(fileName, out string contentType);
-            if (contentType != "application/pdf")
-                throw new BadRequestException($"This method only accepts pdf files");
-            
-            var fileContents = System.IO.File.ReadAllBytes(filePath);
-            return File(fileContents, contentType, fileName);
-        }
-
-        [HttpPost]
-        public ActionResult AddDrugLeaflet([FromForm]IFormFile file)
-        {
-
-            if(file.Length > 0 && file != null)
-            {
-                var rootPath = Directory.GetCurrentDirectory();
-                var fileName = file.FileName;
-                _contentTypeProvider.TryGetContentType(fileName, out string contentType);
-                if (contentType != "application/pdf")
-                    throw new BadRequestException($"DrugLeaflet must be a pdf file");
-
-                var fullPath = $"{rootPath}/MyFiles/DrugLeaflet/{fileName}";
-                using(var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-                return Ok();
-            }
-            return BadRequest();
-        }
-*/

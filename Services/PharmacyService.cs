@@ -84,9 +84,8 @@ namespace MyPharmacy.Services
         public PharmacyDto GetOne(int id)
         {
             if (id < 1)
-            {
                 throw new BadRequestException($"Pharmacy id must be greater than {id}");
-            }
+            
             var pharmacy = _dbContext
                 .Pharmacies
                 .Include(x => x.Address)
@@ -94,9 +93,8 @@ namespace MyPharmacy.Services
                 .FirstOrDefault();
 
             if (pharmacy is null)
-            {
                 throw new NotFoundException($"Pharmacy with {id} not found");
-            }
+            
 
             var pharmacyDto = _mapper.Map<PharmacyDto>(pharmacy);
             return pharmacyDto;
@@ -112,13 +110,10 @@ namespace MyPharmacy.Services
 
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == _userContextService.GetUserId);
             if (user is null)
-            {
                 throw new ForbiddenException($"Your account doesn't exist");
-            }
-
+            
             pharmacy.CreatedByUserId = _userContextService.GetUserId;
             user.Pharmacy = pharmacy;
-            //user.PharmacyId = _userContextService.GetUserId;
             _dbContext.Add(pharmacy);
             _dbContext.SaveChanges();
             
@@ -172,11 +167,11 @@ namespace MyPharmacy.Services
 
             }
             if (pharmacy is null)
-            {
                 throw new NotFoundException($"Pharmacy not found");
-            }
+            
 
             return pharmacy;
         }     
     }
 }
+

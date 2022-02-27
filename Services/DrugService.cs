@@ -39,22 +39,18 @@ namespace MyPharmacy.Services
         public PagedResult<DrugDto> GetAll(int pharmacyId, DrugGetAllQuery query)
         {
             if (pharmacyId < 1)
-            {
                 throw new BadRequestException("Drug id must be greater than 0");
-            }
+            
             if (_userContextService.Role != "Admin")
             {
                 if (_userContextService.PharmacyId != pharmacyId)
-                {
-                    throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");
-                }
+                    throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");           
             }
 
             var drugs = _dbContext
                 .Drugs
                 .Include(d => d.DrugInformation)
                 .Where(d => d.PharmacyId == pharmacyId && (query.Phrase == null || (d.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower()))));
-
      
 
             if (query.DrugSortBy == DrugSortBy.DrugName)
@@ -87,7 +83,6 @@ namespace MyPharmacy.Services
             var result = new PagedResult<DrugDto>(drugsDtos, totalItemsCount, query.PageSize, query.PageNumber);
 
             return result;
-
         }
 
         public DrugDto GetById(int pharmacyId, int drugId)
@@ -146,10 +141,9 @@ namespace MyPharmacy.Services
        
         public void DeletedAllDrugsPharmacyWithId(int pharmacyId)
         {
-            if (pharmacyId < 1)
-            {
+            if (pharmacyId < 1) 
                 throw new BadRequestException("Drug id must be greater than 0");
-            }
+            
             if (_userContextService.Role != "Admin")
             {
                 if (_userContextService.PharmacyId != pharmacyId)
@@ -187,9 +181,7 @@ namespace MyPharmacy.Services
         private Drug GetDrugWithAdminPrivilege(int drugId)
         {
             if (drugId < 1)
-            {
-                throw new BadRequestException("Drug id must be greater than 0");
-            }
+                throw new BadRequestException("Drug id must be greater than 0");         
 
             var drug = _dbContext
                 .Drugs
