@@ -95,7 +95,7 @@ namespace MyPharmacy
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
-            
+            /*
             services.AddCors(options =>
             {
                 options.AddPolicy("ClientFront", builder =>
@@ -105,8 +105,9 @@ namespace MyPharmacy
 
                 );
             });
+            */
             //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PharmacyDb;Trusted_Connection=True;"));
-            //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("PharmacyDbConnection")));
+            services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Server = (localdb)\\mssqllocaldb; Database = PharmacyDb; Trusted_Connection = True; ")));
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)

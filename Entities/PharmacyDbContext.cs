@@ -10,7 +10,10 @@ namespace MyPharmacy.Entities
 {
     public class PharmacyDbContext : DbContext
     {
-        
+        public PharmacyDbContext(DbContextOptions<PharmacyDbContext> options) : base(options)
+        {
+
+        }
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Drug> Drugs { get; set; }
@@ -57,11 +60,11 @@ namespace MyPharmacy.Entities
             modelBuilder.Entity<Address>()
                 .Property(a2 => a2.Street)
                 .IsRequired();
-        }    
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())

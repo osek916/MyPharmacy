@@ -19,11 +19,16 @@ namespace MyPharmacy
         {
             if (_dbContext.Database.CanConnect())
             {
-                var migrations = _dbContext
+
+                if(_dbContext.Database.IsRelational())
+                {
+                    var migrations = _dbContext
                     .Database
                     .GetPendingMigrations();
-                if (migrations.Any() && migrations != null)
-                    _dbContext.Database.Migrate();
+                    if (migrations.Any() && migrations != null)
+                        _dbContext.Database.Migrate();
+                }
+                
 
 
                 if (!_dbContext.Roles.Any())
@@ -109,7 +114,7 @@ namespace MyPharmacy
             return roles;
         }
         
-        private IEnumerable<Pharmacy> GetPharmacy()
+        public IEnumerable<Pharmacy> GetPharmacy()
         {
             var drugsInformations = _dbContext.DrugInformations;
             var pharmacies = new List<Pharmacy>()

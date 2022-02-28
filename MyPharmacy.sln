@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31829.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPharmacy", "MyPharmacy.csproj", "{21AA0651-56DC-4F34-9E0D-868FBC03E59C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPharmacy.Tests", "..\MyPharmacy.Tests\MyPharmacy.Tests.csproj", "{5698E881-3818-4313-B572-EE5260A7B55E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPharmacyIntegrationTests", "..\MyPharmacyIntegrationTests\MyPharmacyIntegrationTests.csproj", "{67B2EDCE-09B8-4DA8-A214-8EEE26341FEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{21AA0651-56DC-4F34-9E0D-868FBC03E59C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21AA0651-56DC-4F34-9E0D-868FBC03E59C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21AA0651-56DC-4F34-9E0D-868FBC03E59C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5698E881-3818-4313-B572-EE5260A7B55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5698E881-3818-4313-B572-EE5260A7B55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5698E881-3818-4313-B572-EE5260A7B55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5698E881-3818-4313-B572-EE5260A7B55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67B2EDCE-09B8-4DA8-A214-8EEE26341FEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B2EDCE-09B8-4DA8-A214-8EEE26341FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B2EDCE-09B8-4DA8-A214-8EEE26341FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B2EDCE-09B8-4DA8-A214-8EEE26341FEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
