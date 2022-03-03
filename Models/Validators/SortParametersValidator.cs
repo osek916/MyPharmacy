@@ -1,13 +1,9 @@
 ﻿using FluentValidation;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators
 {
-
-
     public class SortParametersValidator : AbstractValidator<SortParameters>
     {
         private int[] pageSizeAllowedVariables = new[] { 5, 10, 15, 20 };

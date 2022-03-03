@@ -4,10 +4,8 @@ using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
 using MyPharmacy.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Services
 {

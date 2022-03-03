@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using MyPharmacy.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators.SearchEngine
-{  
+{
     public class SearchEnginePharmacyQueryValidator : AbstractValidator<SearchEnginePharmacyQuery>
     {
         private string[] sortByColumnAllowedVariables = { nameof(Pharmacy.Address.City), nameof(Pharmacy.Name) };

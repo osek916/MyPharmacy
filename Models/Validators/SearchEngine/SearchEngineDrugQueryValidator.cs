@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
 using MyPharmacy.Entities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators.SearchEngine
 {
@@ -14,6 +12,7 @@ namespace MyPharmacy.Models.Validators.SearchEngine
 
         public SearchEngineDrugQueryValidator()
         {
+            RuleFor(d => d.Phrase).NotEmpty();
             RuleFor(d => d.SortBy).Must(value => sortByColumnAllowedVariables.Contains(value))
                 .WithMessage($"SortBy must be in {string.Join(", ", sortByColumnAllowedVariables)}");
 

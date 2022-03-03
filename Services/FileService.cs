@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.StaticFiles;
 using MyPharmacy.Exceptions;
 using MyPharmacy.Models.FileDtos;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Services
 {

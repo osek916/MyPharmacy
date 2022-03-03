@@ -1,13 +1,9 @@
 ﻿using FluentValidation;
 using MyPharmacy.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators
 {
-  
+
     public class UpdateDrugInformationDtoValidator : AbstractValidator<UpdateDrugInformationDto>
     {
         public UpdateDrugInformationDtoValidator(PharmacyDbContext dbContext)

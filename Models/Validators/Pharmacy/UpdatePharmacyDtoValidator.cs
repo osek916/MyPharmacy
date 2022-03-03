@@ -1,14 +1,11 @@
 ﻿using FluentValidation;
 using MyPharmacy.Entities;
 using MyPharmacy.Services;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Models.Validators
 {
-   
+
     public class UpdatePharmacyDtoValidator : AbstractValidator<UpdatePharmacyDto>
     {
         public UpdatePharmacyDtoValidator(PharmacyDbContext dbContext, IUserContextService userContextService)

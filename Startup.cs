@@ -1,30 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using MyPharmacy.Entities;
-using MyPharmacy.Services;
-using AutoMapper;
-using MyPharmacy.Middleware;
-using Microsoft.AspNetCore.Identity;
-using FluentValidation;
-using MyPharmacy.Models;
-using MyPharmacy.Models.Validators;
-using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using MyPharmacy.Entities;
+using MyPharmacy.Middleware;
+using MyPharmacy.Models;
 using MyPharmacy.Models.UserDtos;
+using MyPharmacy.Models.Validators;
 using MyPharmacy.Models.Validators.SearchEngine;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.StaticFiles;
+using MyPharmacy.Services;
+using System.Text;
 
 namespace MyPharmacy
 {
@@ -91,11 +83,12 @@ namespace MyPharmacy
             services.AddScoped<IValidator<SearchEnginePharmacyQuery>, SearchEnginePharmacyQueryValidator>();
             services.AddScoped<IValidator<SearchEngineDrugQuery>, SearchEngineDrugQueryValidator>();
             services.AddScoped<IValidator<SortParameters>, SortParametersValidator>();
+
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 
             services.AddScoped<PharmacySeeder>();
             services.AddSwaggerGen();
-            /*
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("ClientFront", builder =>
@@ -105,7 +98,7 @@ namespace MyPharmacy
 
                 );
             });
-            */
+            
             //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PharmacyDb;Trusted_Connection=True;"));
             services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Server = (localdb)\\mssqllocaldb; Database = PharmacyDb; Trusted_Connection = True; ")));
         }

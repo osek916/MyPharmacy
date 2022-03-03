@@ -2,13 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
-using MyPharmacy.Exceptions;
 using MyPharmacy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Services
 {
@@ -34,7 +32,7 @@ namespace MyPharmacy.Services
        
 
         public PagedResult<SearchEnginePharmacyDto> GetPharmaciesWithDrugs(SearchEngineDrugQuery query)
-        {
+        {            
             var baseQuery = _dbContext
                 .Pharmacies
                 .Include(a => a.Address)
@@ -106,7 +104,7 @@ namespace MyPharmacy.Services
             var baseQuery = _dbContext
                 .Pharmacies
                 .Include(p => p.Address)
-                .Where(p => query.Phrase == null || (p.Address.City.ToLower().Contains(query.Phrase.ToLower()) || 
+                .Where(p => query.Phrase == "" || (p.Address.City.ToLower().Contains(query.Phrase.ToLower()) || 
                 p.Name.ToLower().Contains(query.Phrase.ToLower())) && p.HasPresciptionDrugs == query.HasPresciptionDrugs);
 
             var selector = new Dictionary<string, Expression<Func<Pharmacy, object>>>

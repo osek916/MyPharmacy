@@ -1,13 +1,7 @@
-﻿using MyPharmacy.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MyPharmacy.Models
+﻿namespace MyPharmacy.Models
 {
-    
-   public class SearchEngineDrugInformationDto 
+
+    public class SearchEngineDrugInformationDto 
    {
         public string DrugsName { get; set; }
         public string SubstancesName { get; set; }

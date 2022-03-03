@@ -8,10 +8,8 @@ using MyPharmacy.Models.Enums;
 using MyPharmacy.Models.Interfaces;
 using MyPharmacy.Models.Queries;
 using MyPharmacy.Models.UserDtos;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Services
 {
