@@ -20,7 +20,7 @@ namespace MyPharmacy.Models.Validators
                 .EmailAddress();
 
             RuleFor(x => x.ContactNumber)
-                .NotEmpty();
+                .MinimumLength(9);
 
             RuleFor(x => x.City)
                 .MinimumLength(2);
@@ -32,10 +32,7 @@ namespace MyPharmacy.Models.Validators
                 .NotEmpty();
 
             RuleFor(x => x.PostalCode)
-                .NotEmpty();
-
-            RuleFor(x => x.Street)
-                .NotEmpty();
+                .MinimumLength(5);
         }
     }
 }

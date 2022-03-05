@@ -9,10 +9,8 @@ namespace MyPharmacy.Models.Validators
         public UpdateDrugInformationDtoValidator(PharmacyDbContext dbContext)
         {
 
-
             RuleFor(x => x.DrugsName)
-                .MinimumLength(2);
-       
+                .MinimumLength(2);     
 
             RuleFor(x => x.MilligramsPerTablets)
                 .NotEmpty();

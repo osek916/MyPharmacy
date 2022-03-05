@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
+using MyPharmacy.Helpers;
 using MyPharmacy.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace MyPharmacy.Services
 {
@@ -42,35 +45,22 @@ namespace MyPharmacy.Services
                 .Include(x => x.Address)
                 .Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
-            if (query.PharmaciesSortBy == PharmaciesSortBy.Name)
+            var selector = new Dictionary<string, Expression<Func<Pharmacy, object>>>
             {
-                if (query.GetByChar != '0')
-                    pharmacies = pharmacies.Where(p => p.Name.StartsWith(query.GetByChar.ToString()));
+                {nameof(Pharmacy.Name), p => p.Name},
+                {nameof(Pharmacy.Address.City), p => p.Address.City }
+            };
 
-                if (query.SortDirection == SortDirection.ASC)
-                    pharmacies.OrderBy(d => d.Name);
-                else
-                    pharmacies.OrderByDescending(d => d.Name);
-            }
-            
+            if (query.SortDirection == SortDirection.ASC)
+                pharmacies = pharmacies.OrderBy(selector[query.SortBy]);
+
             else
-            {
-                if (query.GetByChar != '0')
-                    pharmacies = pharmacies.Where(d => d.Address.City.StartsWith(query.GetByChar.ToString()));
+                pharmacies = pharmacies.OrderByDescending(selector[query.SortBy]);
 
-                if (query.SortDirection == SortDirection.ASC)
-                    pharmacies.OrderBy(d => d.Address.City);
-                else
-                    pharmacies.OrderByDescending(d => d.Address.City);
-            }
-
-            var finalPharmacies = pharmacies
-               .Skip((query.PageNumber - 1) * query.PageSize)
-               .Take(query.PageSize).ToList();
-            var totalItemsCount = pharmacies.Count();
+            var finalPharmacies = PaginationHelper<Pharmacy, PharmacyGetAllQuery>.ReturnPaginatedList(query, pharmacies);
             var pharmaciesDto = _mapper.Map<List<PharmacyDto>>(finalPharmacies);
 
-            var result = new PagedResult<PharmacyDto>(pharmaciesDto, totalItemsCount, query.PageSize, query.PageNumber);
+            var result = new PagedResult<PharmacyDto>(pharmaciesDto, pharmacies.Count(), query.PageSize, query.PageNumber);
 
             return result;
         }

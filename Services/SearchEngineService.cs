@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
+using MyPharmacy.Helpers;
 using MyPharmacy.Models;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,11 @@ namespace MyPharmacy.Services
     public class SearchEngineService : ISearchEngineService
     {
         private readonly IMapper _mapper;
-        private readonly ILogger<SearchEngineService> _logger;
         private readonly PharmacyDbContext _dbContext;
 
-        public SearchEngineService( IMapper mapper, ILogger<SearchEngineService> logger, PharmacyDbContext dbContext)
+        public SearchEngineService( IMapper mapper, PharmacyDbContext dbContext)
         {
             _mapper = mapper;
-            _logger = logger;
             _dbContext = dbContext;
         }
        
@@ -56,26 +55,21 @@ namespace MyPharmacy.Services
             else
                 baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
 
-            var pharmacies = baseQuery
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize).ToList();
-            var totalItemsCount = baseQuery.Count();
+            var pharmacies = PaginationHelper<Pharmacy, SearchEngineDrugQuery>.ReturnPaginatedList(query, baseQuery);
             var pharmacyDtos = _mapper.Map<List<SearchEnginePharmacyDto>>(pharmacies);
+            var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, baseQuery.Count(), query.PageSize, query.PageNumber);
 
-            var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
         }
 
 
         public PagedResult<SearchEngineDrugInformationDto> GetDrugInformations(SearchEngineDrugInformationQuery query)
         {
-
             var baseQuery = _dbContext
                 .DrugInformations
                 .Include(d => d.DrugCategories)
                 .Where(d => query.Phrase == null || (d.DrugsName.ToLower().Contains(query.Phrase.ToLower()) ||
                 d.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
-
 
             var selector = new Dictionary<string, Expression<Func<DrugInformation, object>>>
             {
@@ -88,16 +82,13 @@ namespace MyPharmacy.Services
 
             else
                 baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
-            
-            var drugInformations = baseQuery
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize).ToList();
-            var totalItemsCount = baseQuery.Count();
-            var drugInformationDtos = _mapper.Map<List<SearchEngineDrugInformationDto>>(drugInformations);
-            var result = new PagedResult<SearchEngineDrugInformationDto>(drugInformationDtos, totalItemsCount, query.PageSize, query.PageNumber);
-            return result;
-        }
 
+            var drugInformations = PaginationHelper<DrugInformation,SearchEngineDrugInformationQuery>.ReturnPaginatedList(query, baseQuery);
+            var drugInformationDtos = _mapper.Map<List<SearchEngineDrugInformationDto>>(drugInformations);
+            var result = new PagedResult<SearchEngineDrugInformationDto>(drugInformationDtos, baseQuery.Count(), query.PageSize, query.PageNumber);
+
+            return result;
+        }    
 
         public PagedResult<SearchEnginePharmacyDto> GetPharmacies(SearchEnginePharmacyQuery query)
         {
@@ -119,14 +110,10 @@ namespace MyPharmacy.Services
             else
                 baseQuery = baseQuery.OrderByDescending(selector[query.SortBy]);
             
-
-            var pharmacies = baseQuery
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize).ToList();
-            var totalItemsCount = baseQuery.Count();
+            var pharmacies = PaginationHelper<Pharmacy, SearchEnginePharmacyQuery>.ReturnPaginatedList(query, baseQuery);
             var pharmacyDtos = _mapper.Map<List<SearchEnginePharmacyDto>>(pharmacies);
+            var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, baseQuery.Count(), query.PageSize, query.PageNumber);
 
-            var result = new PagedResult<SearchEnginePharmacyDto>(pharmacyDtos, totalItemsCount, query.PageSize, query.PageNumber);
             return result;
         }
     }

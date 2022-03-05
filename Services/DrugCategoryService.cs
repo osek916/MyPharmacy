@@ -20,13 +20,11 @@ namespace MyPharmacy.Services
     {
         private readonly PharmacyDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
 
-        public DrugCategoryService(PharmacyDbContext dbContext, IMapper mapper, ILogger<DrugCategoryService> logger)
+        public DrugCategoryService(PharmacyDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
-            _logger = logger;
         }
 
         public PagedResult<DrugCategoryDto> GetAll(DrugCategoryGetAllQuery query)

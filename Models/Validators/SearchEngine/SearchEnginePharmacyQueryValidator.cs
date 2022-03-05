@@ -7,7 +7,7 @@ namespace MyPharmacy.Models.Validators.SearchEngine
 {
     public class SearchEnginePharmacyQueryValidator : AbstractValidator<SearchEnginePharmacyQuery>
     {
-        private string[] sortByColumnAllowedVariables = { nameof(Pharmacy.Address.City), nameof(Pharmacy.Name) };
+        private string[] sortByColumnAllowedVariables = { nameof(Entities.Pharmacy.Address.City), nameof(Entities.Pharmacy.Name) };
         private int[] pageSizeAllowedVariables = new[] { 5, 10, 15, 20 };
 
         public SearchEnginePharmacyQueryValidator()

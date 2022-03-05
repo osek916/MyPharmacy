@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
+using MyPharmacy.Helpers;
 using MyPharmacy.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,13 +73,10 @@ namespace MyPharmacy.Services
                     drugs.OrderByDescending(d => d.DrugInformation.SubstancesName);
             }
 
-            var finalDrugs = drugs
-                .Skip((query.PageNumber - 1) * query.PageSize)
-                .Take(query.PageSize).ToList();
-            var totalItemsCount = drugs.Count();
+            var finalDrugs = PaginationHelper<Drug, DrugGetAllQuery>.ReturnPaginatedList(query, drugs);
             var drugsDtos = _mapper.Map<List<DrugDto>>(finalDrugs);
 
-            var result = new PagedResult<DrugDto>(drugsDtos, totalItemsCount, query.PageSize, query.PageNumber);
+            var result = new PagedResult<DrugDto>(drugsDtos, drugs.Count(), query.PageSize, query.PageNumber);
 
             return result;
         }

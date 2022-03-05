@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPharmacy.Entities;
 using MyPharmacy.Exceptions;
+using MyPharmacy.Helpers;
 using MyPharmacy.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace MyPharmacy.Services
 {
@@ -22,13 +25,11 @@ namespace MyPharmacy.Services
 
         private readonly PharmacyDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
 
-        public DrugInformationService(PharmacyDbContext dbContext, IMapper mapper, ILogger<DrugInformationService> logger)
+        public DrugInformationService(PharmacyDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
-            _logger = logger;
         }
 
         public PagedResult<DrugInformationDto> GetAll(GetAllDrugInformationQuery query)
@@ -37,35 +38,22 @@ namespace MyPharmacy.Services
                 .DrugInformations
                 .Where(d => query.Phrase == null || (d.DrugsName.ToLower().Contains(query.Phrase.ToLower()) || d.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
-
-            if (query.DrugSortBy == DrugSortBy.DrugName)
+            var selector = new Dictionary<string, Expression<Func<DrugInformation, object>>>
             {
-                if (query.GetByChar != '0')
-                    drugInformations = drugInformations.Where(d => d.DrugsName.StartsWith(query.GetByChar.ToString()));
+                {nameof(DrugInformation.DrugsName), d => d.DrugsName},
+                {nameof(DrugInformation.SubstancesName), d => d.SubstancesName }
+            };
 
-                if (query.SortDirection == SortDirection.ASC)
-                    drugInformations.OrderBy(d => d.DrugsName);
-                else
-                    drugInformations.OrderByDescending(d => d.DrugsName);
-            }
+            if (query.SortDirection == SortDirection.ASC)
+                drugInformations = drugInformations.OrderBy(selector[query.SortBy]);
+
             else
-            {
-                if (query.GetByChar != '0')
-                    drugInformations = drugInformations.Where(d => d.SubstancesName.StartsWith(query.GetByChar.ToString()));
+                drugInformations = drugInformations.OrderByDescending(selector[query.SortBy]);
 
-                if (query.SortDirection == SortDirection.ASC)
-                    drugInformations.OrderBy(d => d.SubstancesName);
-                else
-                    drugInformations.OrderByDescending(d => d.SubstancesName);
-            }
-
-            var finaldrugInformations = drugInformations
-               .Skip((query.PageNumber - 1) * query.PageSize)
-               .Take(query.PageSize).ToList();
-            var totalItemsCount = drugInformations.Count();
+            var finaldrugInformations = PaginationHelper<DrugInformation, GetAllDrugInformationQuery>.ReturnPaginatedList(query, drugInformations);
             var drugInformationDtos = _mapper.Map<List<DrugInformationDto>>(finaldrugInformations);
 
-            var result = new PagedResult<DrugInformationDto>(drugInformationDtos, totalItemsCount, query.PageSize, query.PageNumber);
+            var result = new PagedResult<DrugInformationDto>(drugInformationDtos, drugInformations.Count(), query.PageSize, query.PageNumber);
 
             return result;
         }
