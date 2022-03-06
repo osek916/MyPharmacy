@@ -90,6 +90,9 @@ namespace MyPharmacy.Services
 
         public int Create(int pharmacyId, CreateDrugDto dto)
         {
+            if (_userContextService.PharmacyId != pharmacyId)
+                throw new BadRequestException("Pharmacy Id from route must be from your pharmacy");
+
             if (dto.Price < 0 || dto.NumberOfTablets < 1 || dto.MilligramsPerTablets < 0)
                 throw new BadRequestException($"Bad drug parameters");
 
@@ -98,8 +101,7 @@ namespace MyPharmacy.Services
 
             if (drugInformation is null)
                 throw new NotFoundException($"Drug with this information parameters not found. Check the correctness of the entered data");
-
-            
+           
             var pharmacy = GetPharmacyById(pharmacyId, $"You dont have a permission to add Drugs to this pharmacy");
             if (pharmacy.HasPresciptionDrugs == false && drugInformation.PrescriptionRequired == true)
             {
@@ -147,8 +149,7 @@ namespace MyPharmacy.Services
                     throw new ForbiddenException($"The specified drug doesn't exist or does not belong to your pharmacy");
                 }
             }
-
-            
+           
             _logger.LogWarning($"Attempt to remove all drugs from the pharmacy with id: {pharmacyId}");
             var drugs = _dbContext.Drugs.Where(d => d.PharmacyId == pharmacyId);
             if(drugs is null)
