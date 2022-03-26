@@ -36,8 +36,7 @@ namespace MyPharmacy.Services
             _logger = logger;
             _userContextService = userContextService;
         }
-
-             
+        
         public PagedResult<PharmacyDto> GetAll(PharmacyGetAllQuery query)
         {
             var pharmacies = _dbContext
@@ -64,8 +63,7 @@ namespace MyPharmacy.Services
 
             return result;
         }
-
-             
+         
         public PharmacyDto GetOne(int id)
         {
             if (id < 1)
@@ -80,7 +78,6 @@ namespace MyPharmacy.Services
             if (pharmacy is null)
                 throw new NotFoundException($"Pharmacy with {id} not found");
             
-
             var pharmacyDto = _mapper.Map<PharmacyDto>(pharmacy);
             return pharmacyDto;
         }
@@ -126,8 +123,7 @@ namespace MyPharmacy.Services
             var pharmacy = GetPharmacyByCreatedUserForAdminAndManager(id);
             _dbContext.Pharmacies.Remove(pharmacy);
             _dbContext.SaveChanges();
-        }
-        
+        }      
 
         private Pharmacy GetPharmacyByCreatedUserForAdminAndManager(int id)
         {
@@ -152,8 +148,7 @@ namespace MyPharmacy.Services
 
             }
             if (pharmacy is null)
-                throw new NotFoundException($"Pharmacy not found");
-            
+                throw new NotFoundException($"Pharmacy not found");           
 
             return pharmacy;
         }     

@@ -50,7 +50,7 @@ namespace MyPharmacy.Controllers
             _pharmacyService.Update(dto);
             return Ok();
         }
-
+    
         
         [HttpDelete]
         [Authorize(Roles = "Admin, Manager")]

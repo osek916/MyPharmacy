@@ -33,7 +33,7 @@ namespace MyPharmacy.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult Update([FromBody] UpdateDrugCategoryDto dto, int id)
+        public ActionResult UpdateById([FromBody] UpdateDrugCategoryDto dto, int id)
         {
             _drugCategoryService.UpdateById(dto, id);
             return Ok();

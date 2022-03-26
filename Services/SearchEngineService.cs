@@ -37,6 +37,7 @@ namespace MyPharmacy.Services
                 .Include(a => a.Address)
                 .Include(d => d.Drugs)
                 .ThenInclude(d => d.DrugInformation)
+                .AsNoTracking()
                 .Where(d => d.Drugs.Any(dd => dd.DrugInformation.DrugsName.ToLower().Contains(query.Phrase.ToLower())
                 || dd.DrugInformation.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
@@ -68,6 +69,7 @@ namespace MyPharmacy.Services
             var baseQuery = _dbContext
                 .DrugInformations
                 .Include(d => d.DrugCategories)
+                .AsNoTracking()
                 .Where(d => query.Phrase == null || (d.DrugsName.ToLower().Contains(query.Phrase.ToLower()) ||
                 d.SubstancesName.ToLower().Contains(query.Phrase.ToLower())));
 
@@ -95,6 +97,7 @@ namespace MyPharmacy.Services
             var baseQuery = _dbContext
                 .Pharmacies
                 .Include(p => p.Address)
+                .AsNoTracking()
                 .Where(p => query.Phrase == "" || (p.Address.City.ToLower().Contains(query.Phrase.ToLower()) || 
                 p.Name.ToLower().Contains(query.Phrase.ToLower())) && p.HasPresciptionDrugs == query.HasPresciptionDrugs);
 

@@ -85,7 +85,7 @@ namespace MyPharmacy
             services.AddScoped<IValidator<SearchEnginePharmacyQuery>, SearchEnginePharmacyQueryValidator>();
             services.AddScoped<IValidator<SearchEngineDrugQuery>, SearchEngineDrugQueryValidator>();
             services.AddScoped<IValidator<SortParameters>, SortParametersValidator>();
-            services.AddScoped < IValidator<GetAllDrugInformationQuery>, GetAllDrugInformationQueryValidator>();
+            services.AddScoped<IValidator<GetAllDrugInformationQuery>, GetAllDrugInformationQueryValidator>();
             services.AddScoped<IValidator<PharmacyGetAllQuery>, PharmacyGetAllQueryValidator>();
 
             services.AddScoped<IUserContextService, UserContextService>();
