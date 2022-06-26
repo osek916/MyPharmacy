@@ -3,12 +3,10 @@ using MyPharmacy.Models.Interfaces;
 
 namespace MyPharmacy.Models.Queries
 {
-    public class UserGetAllQuery : IPagination, ISortByChar, ISortByDirection
+    public class UserGetAllQuery : SortParameters, IPagination, ISortByChar, ISortByDirection, IPhrase
     {
         public UserSortBy UserSortBy { get; set; } = UserSortBy.City;
-        public SortDirection SortDirection { get; set; } = SortDirection.ASC;
         public char GetByChar { get; set; } = '0';
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public string Phrase { get; set; } = "";
     }
 }

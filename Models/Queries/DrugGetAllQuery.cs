@@ -2,13 +2,10 @@
 
 namespace MyPharmacy.Models
 {
-    public class DrugGetAllQuery : ISortByDirection, ISortByChar, IPagination
+    public class DrugGetAllQuery : SortParameters, ISortByDirection, ISortByChar, IPagination, IPhrase
     {
-        public SortDirection SortDirection { get; set; } = SortDirection.ASC;
         public char GetByChar { get; set; } = '0';
         public DrugSortBy DrugSortBy { get; set; } = DrugSortBy.DrugName;
-        public string Phrase { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public string Phrase { get; set; } = "";
     }
 }

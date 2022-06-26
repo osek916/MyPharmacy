@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MyPharmacy.Entities;
 using MyPharmacy.Models;
+using MyPharmacy.Models.OrderForPharmacyDtos;
 
 namespace MyPharmacy
 {
@@ -66,6 +67,12 @@ namespace MyPharmacy
             CreateMap<UpdateDrugCategoryDto, DrugCategory>();
 
             CreateMap<User, UserDto>();
+
+            CreateMap<OrderForPharmacy, OrderForPharmacyDto>();
+
+            CreateMap<CreateOrderForPharmacyDto, OrderForPharmacy>();
+
+            CreateMap<CreateOrderForPharmacyDrugDto, Drug>();
         }
     }
 }

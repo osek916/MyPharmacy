@@ -12,9 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 using MyPharmacy.Entities;
 using MyPharmacy.Middleware;
 using MyPharmacy.Models;
+using MyPharmacy.Models.OrderForPharmacyDtos;
 using MyPharmacy.Models.UserDtos;
 using MyPharmacy.Models.Validators;
 using MyPharmacy.Models.Validators.DrugInformation;
+using MyPharmacy.Models.Validators.OrderForPharmacy;
 using MyPharmacy.Models.Validators.Pharmacy;
 using MyPharmacy.Models.Validators.SearchEngine;
 using MyPharmacy.Services;
@@ -54,7 +56,7 @@ namespace MyPharmacy
                 };
             });
             
-            services.AddControllers().AddFluentValidation();
+            services.AddControllers().AddNewtonsoftJson().AddFluentValidation();
             services.AddDbContext<PharmacyDbContext>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDrugService, DrugService>();
@@ -69,6 +71,7 @@ namespace MyPharmacy
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddSingleton<FileExtensionContentTypeProvider>();
             //Validators
+            #region Validators
             services.AddScoped<IValidator<UserRegisterDto>, UserRegisterDtoValidator>();
             services.AddScoped<IValidator<CreateDrugCategoryDto>, CreateDrugCategoryDtoValidator>();
             services.AddScoped<IValidator<CreateDrugDto>, CreateDrugDtoValidator>();
@@ -85,9 +88,11 @@ namespace MyPharmacy
             services.AddScoped<IValidator<SearchEnginePharmacyQuery>, SearchEnginePharmacyQueryValidator>();
             services.AddScoped<IValidator<SearchEngineDrugQuery>, SearchEngineDrugQueryValidator>();
             services.AddScoped<IValidator<SortParameters>, SortParametersValidator>();
+            services.AddScoped<IValidator<CreateOrderForPharmacyDto>, CreateOrderForPharmacyDtoValidator>();
             services.AddScoped<IValidator<GetAllDrugInformationQuery>, GetAllDrugInformationQueryValidator>();
             services.AddScoped<IValidator<PharmacyGetAllQuery>, PharmacyGetAllQueryValidator>();
-
+            services.AddScoped<IValidator<CreateOrderForPharmacyDto>, CreateOrderForPharmacyDtoValidator>();
+            #endregion
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 
             services.AddScoped<PharmacySeeder>();

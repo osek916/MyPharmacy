@@ -20,6 +20,7 @@ namespace MyPharmacy.Entities
         public DbSet<DrugInformation> DrugInformations { get; set; }
         public DbSet<OrderByClient> OrderByClients { get; set; }
         public DbSet<DrugCategory> DrugCategories { get; set; }
+        public DbSet<OrderForPharmacy> OrderForPharmacies { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

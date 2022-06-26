@@ -2,8 +2,9 @@
 
 namespace MyPharmacy.Models
 {
-    public class DrugCategoryGetAllQuery : SortParameters, ISortByDirection, IPagination, ISortByChar
+    public class DrugCategoryGetAllQuery : SortParameters, ISortByDirection, IPagination, ISortByChar, IPhrase
     {
         public char GetByChar { get; set; } = '0';
+        public string Phrase { get; set; } = "";
     }
 }
