@@ -21,10 +21,16 @@ namespace MyPharmacy.Entities
         public DbSet<OrderByClient> OrderByClients { get; set; }
         public DbSet<DrugCategory> DrugCategories { get; set; }
         public DbSet<OrderForPharmacy> OrderForPharmacies { get; set; }
+        public DbSet<EmailParams> EmailParams { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<EmailParams>()
+                .HasOne(p => p.Pharmacy)
+                .WithOne(e => e.EmailParams)
+                .IsRequired();
+
             modelBuilder.Entity<Status>()
                 .Property(s => s.Name)
                 .IsRequired();

@@ -16,5 +16,6 @@ namespace MyPharmacy.Entities
         public int AddressId { get; set; }
         public virtual Address Address { get; set; }
         public virtual List<User> Users { get; set; }
+        public virtual EmailParams EmailParams { get; set; }
     }
 }

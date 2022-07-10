@@ -20,10 +20,12 @@ namespace MyPharmacy.Services
         OrderForPharmacyDto GetOneById(int id);
         PagedResult<OrderForPharmacyDto> GetAll(OrderForPharmacyGetAllQuery query);
         int CreateOrderForPharmacy(CreateOrderForPharmacyDto dto);
-        void Update(UpdateOrderForPharmacyDto dto);
+        //void Update(UpdateOrderForPharmacyDto dto);
         void UpdateByPatch(JsonPatchDocument orderForPharmacyPatchModel, int id);
         void DeleteById(int id);
-        void AddDrugToOrder(List<AddDrugToOrderDto> dto);
+        void AddDrugToOrder(int id, AddDrugToOrderDto dto);
+        void UpdateStatusOfOrder(int id, string status);
+        void UpdateDateOfReceiptOfOrder(int id, DateTime? dateOfReceipt);
 
     }
     public class OrderForPharmacyService : IOrderForPharmacyService
@@ -42,6 +44,7 @@ namespace MyPharmacy.Services
             var orderForPharmacy = _dbContext
                 .OrderForPharmacies
                 .Include(o => o.Drugs)
+                .AsNoTracking()
                 .FirstOrDefault();
 
             if (orderForPharmacy != null)
@@ -61,7 +64,8 @@ namespace MyPharmacy.Services
                 .Include(o => o.Drugs)
                 .Include(o => o.Status)
                 .Include(o => o.User)
-                .Where(o => o.PharmacyId == _userContextService.PharmacyId && ( query.year == null || o.DateOfOrder.Year == query.year));
+                .Where(o => o.PharmacyId == _userContextService.PharmacyId && ( query.year == null || o.DateOfOrder.Year == query.year))
+                .AsNoTracking();
                 //.Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
             var selector = new Dictionary<string, Expression<Func<OrderForPharmacy, object>>>
@@ -111,15 +115,104 @@ namespace MyPharmacy.Services
 
             return orderForPharmacy.Id;
         }
-
-        public void Update(UpdateOrderForPharmacyDto dto)
+      
+        public void UpdateStatusOfOrder(int id, string status)
         {
-            
+            var order = _dbContext.OrderForPharmacies.FirstOrDefault(o => o.Id == id
+            && o.PharmacyId == _userContextService.PharmacyId);
+
+            if(order != null)
+            {
+                var dbStatus = _dbContext.Statuses.AsNoTracking()
+                    .FirstOrDefault(s => s.Name.ToLower() == status.ToLower());
+
+                if(dbStatus != null)
+                {
+                    order.StatusId = dbStatus.Id;
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new BadRequestException($"The given status is invalid");
+                }
+            }
+            else
+            {
+                throw new NotFoundException($"Order not found");
+            }
         }
 
-        public void AddDrugToOrder(List<AddDrugToOrderDto> dto) //zrobić sprawdzanie
+        public void UpdateDateOfReceiptOfOrder(int id, DateTime? dateOfReceipt)
         {
+            var order = _dbContext.OrderForPharmacies.FirstOrDefault(o => o.Id == id
+            && o.PharmacyId == _userContextService.PharmacyId);
 
+            if (order != null)
+            {
+                //if (dateOfReceipt == null)
+                if(!dateOfReceipt.HasValue)
+                {
+                    order.DateOfReceipt = DateTime.Now;
+                }
+                else
+                {
+                    if(order.DateOfOrder <= dateOfReceipt)
+                    {
+                        order.DateOfReceipt = dateOfReceipt;
+                    }
+                    else
+                    {
+                        throw new BadRequestException($"Date of order must be less than date of receipt");
+                    }                    
+                }
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                throw new NotFoundException($"Order not found");
+            }
+        }
+
+        public void AddDrugToOrder(int id, AddDrugToOrderDto dto) //zrobić sprawdzanie
+        {
+            var order = _dbContext.OrderForPharmacies
+                .Include(d => d.Drugs)
+                .ThenInclude(d => d.DrugInformation)
+                .FirstOrDefault(o => o.Id == id
+                && o.PharmacyId == _userContextService.PharmacyId);
+
+            if(order != null)
+            {
+
+                var drug = order.Drugs
+                    .FirstOrDefault(d => d.DrugInformation.DrugsName == dto.DrugsName 
+                    && d.DrugInformation.SubstancesName == dto.SubstancesName
+                    && d.DrugInformation.NumberOfTablets == dto.NumberOfTablets 
+                    && d.DrugInformation.MilligramsPerTablets == dto.MilligramsPerTablets);
+
+                if (drug != null)
+                {
+                    //Także odejmuje
+                    if(drug.AmountOfPackages - dto.AmountOfPackages >= 0)
+                    {
+                        drug.AmountOfPackages += dto.AmountOfPackages;
+                        drug.Price += (dto.Price * dto.AmountOfPackages) + dto.AdditionalCosts;
+                        _dbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new BadRequestException($"The number of packages after the substraction must be equal or greater than 0");
+                    }
+                }
+                else
+                {
+                    throw new NotFoundException($"Drug not found");
+                }
+            }
+            else
+            {
+                throw new NotFoundException($"Order not found");
+            }
         }
 
         public void UpdateByPatch(JsonPatchDocument orderForPharmacyPatchModel, int id)
@@ -154,13 +247,5 @@ namespace MyPharmacy.Services
             if (_userContextService.PharmacyId == null)
                 throw new ForbiddenException($"You don't have any Pharmacy");
         }
-        //public void UpdateStatus(UpdateOrderForPharmacyDto dto)
-        //{
-        //    if (_userContextService.PharmacyId == null)
-        //    {
-        //        throw new ForbiddenException($"You don't have any Pharmacy");
-        //    }
-
-        //}
     }
 }

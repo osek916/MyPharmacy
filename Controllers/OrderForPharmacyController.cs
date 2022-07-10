@@ -48,22 +48,47 @@ namespace MyPharmacy.Controllers
             return Created($"api/pharmacy/{id}", null);
         }
         //put zamówienia do swojej apteki po id
+        /*
         [HttpPut]
         [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult Update([FromBody] UpdateOrderForPharmacyDto dto)
+        public ActionResult UpdateOrderForPharmacy([FromBody] UpdateOrderForPharmacyDto dto)
         {
             _orderForPharmacyService.Update(dto);
             return Ok();
         }
-
-        [HttpPatch("id")]
+        */
+        [HttpPatch("{id}")]
         public ActionResult UpdateByPatch([FromBody] JsonPatchDocument orderForPharmacyPatchModel, [FromRoute] int id)
         {
             _orderForPharmacyService.UpdateByPatch(orderForPharmacyPatchModel, id);
             return Ok();
         }
 
-        [HttpDelete("id")]
+        [HttpPut("status/{id}")]
+        [Authorize(Roles = "Manager, Pharmacist")]
+        public ActionResult UpdateStatusOfOrder([FromRoute] int id,  string status)
+        {
+            _orderForPharmacyService.UpdateStatusOfOrder(id, status);
+            return Ok();
+        }
+
+        [HttpPut("dateofreceipt/{id}")]
+        [Authorize(Roles = "Manager, Pharmacist")]
+        public ActionResult UpdateDateOfReceiptOfOrder([FromRoute] int id, DateTime? dt)
+        {
+            _orderForPharmacyService.UpdateDateOfReceiptOfOrder(id, dt);
+            return Ok();
+        }
+
+        [HttpPut("adddrugtoorder/{id}")]
+        [Authorize(Roles = "Manager, Pharmacist")]
+        public ActionResult AddDrugToOrderForPharmacy([FromRoute] int id, [FromBody] AddDrugToOrderDto dto)
+        {
+            _orderForPharmacyService.AddDrugToOrder(id, dto);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
         public ActionResult DeleteById([FromRoute] int id)
         {
             _orderForPharmacyService.DeleteById(id);
