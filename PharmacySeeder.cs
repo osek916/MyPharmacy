@@ -25,9 +25,7 @@ namespace MyPharmacy
                     .GetPendingMigrations();
                     if (migrations.Any() && migrations != null)
                         _dbContext.Database.Migrate();
-                }
-                
-
+                }               
 
                 if (!_dbContext.Roles.Any())
                 {
@@ -67,7 +65,6 @@ namespace MyPharmacy
         }
 
         
-
         private IEnumerable<Status> GetStatuses()
         {
             var statuses = new List<Status>()

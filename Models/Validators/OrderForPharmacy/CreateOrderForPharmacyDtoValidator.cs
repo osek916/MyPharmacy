@@ -25,8 +25,6 @@ namespace MyPharmacy.Models.Validators.OrderForPharmacy
             RuleFor(x => x.DrugsDtos)
                 .Custom((value, context) =>
                 {
-                    //var drugFromDbContext = dbContext.Drugs.Include(x => x.DrugInformation).Select(drugDto => new CreateOrderForPharmacyDrugDto() { });
-                    //var drugInformationExist = dbContext.DrugInformations;
                     foreach (var drug in value)
                     {
                         if (!drugInformationExist.Any(d => d.MilligramsPerTablets == drug.MilligramsPerTablets && d.NumberOfTablets == drug.NumberOfTablets &&

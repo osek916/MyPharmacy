@@ -22,14 +22,14 @@ namespace MyPharmacy.Controllers
             var sendMessageDto = _emailSenderService.SendMessageToAllClients();
             return Ok();
         }
-
+        /*
         [HttpPost]
         [Authorize(Roles = "Admin, Manager, Pharmacist")]
         public ActionResult SendMessageToClient()
         {
             var sendMessageDto = _emailSenderService.SendMessageToClient();
             return Ok();
-        }
+        }*/
 
     }
 }

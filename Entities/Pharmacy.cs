@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using MyPharmacy.Interfaces;
+using System.Collections.Generic;
 
 namespace MyPharmacy.Entities
 {
-    public class Pharmacy 
+    public class Pharmacy : IPharmacy
     {
         public int Id { get; set; }
         public string Name { get; set; }

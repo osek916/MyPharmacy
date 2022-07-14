@@ -42,7 +42,7 @@ namespace MyPharmacy.Controllers
         //post zamówienia do swojej apteki
         [HttpPost]
         [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult CreateOrder([FromBody] CreateOrderForPharmacyDto dto)
+        public ActionResult CreateOrderForPharmacy([FromBody] CreateOrderForPharmacyDto dto)
         {
             var id = _orderForPharmacyService.CreateOrderForPharmacy(dto);
             return Created($"api/pharmacy/{id}", null);
@@ -64,7 +64,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        [HttpPut("status/{id}")]
+        [HttpPut("{status}/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult UpdateStatusOfOrder([FromRoute] int id,  string status)
         {
@@ -72,7 +72,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        [HttpPut("dateofreceipt/{id}")]
+        [HttpPut("{dateofreceipt}/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult UpdateDateOfReceiptOfOrder([FromRoute] int id, DateTime? dt)
         {
@@ -80,7 +80,7 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        [HttpPut("adddrugtoorder/{id}")]
+        [HttpPut("{adddrugtoorder}/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult AddDrugToOrderForPharmacy([FromRoute] int id, [FromBody] AddDrugToOrderDto dto)
         {

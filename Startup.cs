@@ -67,6 +67,9 @@ namespace MyPharmacy
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IOrderForPharmacyService, OrderForPharmacyService>();
+            services.AddScoped<IOrderByClientService, OrderByClientService>();
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddSingleton<FileExtensionContentTypeProvider>();
