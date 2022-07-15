@@ -19,5 +19,6 @@ namespace MyPharmacy.Entities
         public int PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
         public virtual List<Drug> Drugs { get; set; }
+
     }
 }

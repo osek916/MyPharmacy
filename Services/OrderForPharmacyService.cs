@@ -193,7 +193,7 @@ namespace MyPharmacy.Services
                 if (drug != null)
                 {
                     //Także odejmuje
-                    if(drug.AmountOfPackages - dto.AmountOfPackages >= 0)
+                    if(drug.AmountOfPackages - dto.AmountOfPackages < 0)
                     {
                         drug.AmountOfPackages += dto.AmountOfPackages;
                         drug.Price += (dto.Price * dto.AmountOfPackages) + dto.AdditionalCosts;
@@ -205,8 +205,27 @@ namespace MyPharmacy.Services
                     }
                 }
                 else
-                {
-                    throw new NotFoundException($"Drug not found");
+                {                   
+                    var drugInformation = _dbContext.DrugInformations.FirstOrDefault(d => d.DrugsName == dto.DrugsName
+                    && d.SubstancesName == dto.SubstancesName
+                    && d.NumberOfTablets == dto.NumberOfTablets
+                    && d.MilligramsPerTablets == dto.MilligramsPerTablets);
+
+                    if(drugInformation != null)
+                    {
+                        order.Drugs.Add(new Drug()
+                        {
+                            Price = dto.Price,
+                            AmountOfPackages = dto.AmountOfPackages,
+                            PharmacyId = (int)_userContextService.PharmacyId,
+                            DrugInformation = drugInformation
+                        });
+                    }
+                    else
+                    {
+                        throw new NotFoundException($"DrugInformation not found");
+                    }
+                    
                 }
             }
             else

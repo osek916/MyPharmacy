@@ -64,23 +64,23 @@ namespace MyPharmacy.Controllers
             return Ok();
         }
 
-        [HttpPut("{status}/{id}")]
+        [HttpPut("status/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult UpdateStatusOfOrder([FromRoute] int id,  string status)
+        public ActionResult UpdateStatusOfOrder([FromRoute] int id,  [FromBody]string status)
         {
             _orderForPharmacyService.UpdateStatusOfOrder(id, status);
             return Ok();
         }
 
-        [HttpPut("{dateofreceipt}/{id}")]
+        [HttpPut("dateofreceipt/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult UpdateDateOfReceiptOfOrder([FromRoute] int id, DateTime? dt)
+        public ActionResult UpdateDateOfReceiptOfOrder([FromRoute] int id, [FromBody]DateTime? dt)
         {
             _orderForPharmacyService.UpdateDateOfReceiptOfOrder(id, dt);
             return Ok();
         }
 
-        [HttpPut("{adddrugtoorder}/{id}")]
+        [HttpPut("drug/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult AddDrugToOrderForPharmacy([FromRoute] int id, [FromBody] AddDrugToOrderDto dto)
         {

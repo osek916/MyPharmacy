@@ -41,6 +41,7 @@ namespace MyPharmacy.Services
         {
             var pharmacies = _dbContext
                 .Pharmacies
+                .AsNoTracking()
                 .Include(x => x.Address)
                 .Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
@@ -73,6 +74,7 @@ namespace MyPharmacy.Services
                 .Pharmacies
                 .Include(x => x.Address)
                 .Where(x => x.Id == id)
+                .AsNoTracking()
                 .FirstOrDefault();
 
             if (pharmacy is null)
