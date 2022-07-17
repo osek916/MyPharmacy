@@ -21,7 +21,7 @@ namespace MyPharmacy.Services
         PagedResult<OrderForPharmacyDto> GetAll(OrderForPharmacyGetAllQuery query);
         int CreateOrderForPharmacy(CreateOrderForPharmacyDto dto);
         //void Update(UpdateOrderForPharmacyDto dto);
-        void UpdateByPatch(JsonPatchDocument orderForPharmacyPatchModel, int id);
+        void UpdateByPatch(JsonPatchDocument<OrderForPharmacy> orderForPharmacyPatchModel, int id);
         void DeleteById(int id);
         void AddDrugToOrder(int id, AddDrugToOrderDto dto);
         void UpdateStatusOfOrder(int id, string status);
@@ -234,7 +234,7 @@ namespace MyPharmacy.Services
             }
         }
 
-        public void UpdateByPatch(JsonPatchDocument orderForPharmacyPatchModel, int id)
+        public void UpdateByPatch(JsonPatchDocument<OrderForPharmacy> orderForPharmacyPatchModel, int id)
         {
             UserHasAPharmacy();
 

@@ -58,7 +58,7 @@ namespace MyPharmacy.Controllers
         }
         */
         [HttpPatch("{id}")]
-        public ActionResult UpdateByPatch([FromBody] JsonPatchDocument orderForPharmacyPatchModel, [FromRoute] int id)
+        public ActionResult UpdateByPatch([FromBody] JsonPatchDocument<OrderForPharmacy> orderForPharmacyPatchModel, [FromRoute] int id)
         {
             _orderForPharmacyService.UpdateByPatch(orderForPharmacyPatchModel, id);
             return Ok();
