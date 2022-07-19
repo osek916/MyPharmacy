@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyPharmacy.Entities;
 
 namespace MyPharmacy.Migrations
 {
     [DbContext(typeof(PharmacyDbContext))]
-    partial class PharmacyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220719150035_UpdateOrderByClient1")]
+    partial class UpdateOrderByClient1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,9 +218,6 @@ namespace MyPharmacy.Migrations
                     b.Property<int>("NumberOfOrder")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PharmacyId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -233,8 +232,6 @@ namespace MyPharmacy.Migrations
                     b.HasIndex("AddressId")
                         .IsUnique()
                         .HasFilter("[AddressId] IS NOT NULL");
-
-                    b.HasIndex("PharmacyId");
 
                     b.HasIndex("StatusId");
 
@@ -461,10 +458,6 @@ namespace MyPharmacy.Migrations
                         .WithOne("OrderByClient")
                         .HasForeignKey("MyPharmacy.Entities.OrderByClient", "AddressId");
 
-                    b.HasOne("MyPharmacy.Entities.Pharmacy", "Pharmacy")
-                        .WithMany()
-                        .HasForeignKey("PharmacyId");
-
                     b.HasOne("MyPharmacy.Entities.Status", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId");
@@ -474,8 +467,6 @@ namespace MyPharmacy.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Address");
-
-                    b.Navigation("Pharmacy");
 
                     b.Navigation("Status");
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyPharmacy.Entities;
 using MyPharmacy.Models;
+using MyPharmacy.Models.OrderByClientDtos;
+using MyPharmacy.Models.Queries;
 using MyPharmacy.Services;
 
 namespace MyPharmacy.Controllers
 {
-    [Route("api/pharmacy")]
+    [Route("api/orderbyclient")]
     [ApiController]
     public class OrderByClientController : ControllerBase
     {
@@ -16,26 +17,40 @@ namespace MyPharmacy.Controllers
         {
             _orderByClientService = orderByClientService;
         }
-        /*
-        [HttpGet("user/{id}")]
+        
+        [HttpGet("{numberOfOrder}")]
         [Authorize(Roles = "User")]
-        public ActionResult<OrderByClientDto> GetOneById([FromRoute] int id)
+        public ActionResult<OrderByClientDto> GetOneByNumberOfOrder([FromRoute] int numberOfOrder)
         {
-            var orderByClientDto = _orderByClientService.GetOneById(id);
+            var orderByClientDto = _orderByClientService.GetOneByNumberOfOrder(numberOfOrder);
             return orderByClientDto;
         }
 
-        [HttpGet("user")]
+        /* po id
+        [HttpGet("{numberOfOrder}")]
         [Authorize(Roles = "User")]
-        public ActionResult<PagedResult<OrderByClientDto>> UserGetAll(OrderByClientGetAllQuery query)
+        public ActionResult<OrderByClientDto> GetOneByNumberOfOrder([FromRoute] int numberOfOrder)
         {
-            var orderByClientDto = _orderByClientService.GetAll(id);
+            var orderByClientDto = _orderByClientService.GetOneByNumberOfOrder(numberOfOrder);
+            return orderByClientDto;
+        }
+        */
+        [HttpGet()]
+        [Authorize(Roles = "User")]
+        public ActionResult<PagedResult<OrderByClientDto>> GetAll([FromQuery] OrderByClientGetAllQuery query)
+        {
+            var orderByClientDto = _orderByClientService.GetAll(query);
             return orderByClientDto;
         }
 
-        [HttpGet("")]
-        [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult<O>
-        */ 
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public ActionResult CreateOrderByClient([FromBody] CreateOrderByClientDto dto)
+        {
+            var id = _orderByClientService.CreateOrderByClient(dto);
+            return Created($"api/orderbyclient/{id}", null);
+        }
+
+        
     }
 }

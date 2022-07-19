@@ -7,9 +7,6 @@ using MyPharmacy.Models.OrderForPharmacyDtos;
 using MyPharmacy.Models.Queries;
 using MyPharmacy.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyPharmacy.Controllers
 {
@@ -22,7 +19,7 @@ namespace MyPharmacy.Controllers
         {
             _orderForPharmacyService = orderForPharmacyService;
         }
-        //get zamówienie ze swojej apteki po id
+      
         [HttpGet("{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult<OrderForPharmacyDto> GetOneById([FromRoute] int id)
@@ -30,7 +27,7 @@ namespace MyPharmacy.Controllers
             var orderForPharmacyDtos = _orderForPharmacyService.GetOneById(id);
             return orderForPharmacyDtos;
         }
-        //get zamówienia swojej apteki
+
         [HttpGet]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult<PagedResult<OrderForPharmacyDto>> GetAll([FromQuery] OrderForPharmacyGetAllQuery query)
@@ -38,25 +35,15 @@ namespace MyPharmacy.Controllers
             var orderForPharmaciesDtos = _orderForPharmacyService.GetAll(query);
             return orderForPharmaciesDtos;
         }
-
-        //post zamówienia do swojej apteki
+  
         [HttpPost]
         [Authorize(Roles = "Manager, Pharmacist")]
         public ActionResult CreateOrderForPharmacy([FromBody] CreateOrderForPharmacyDto dto)
         {
             var id = _orderForPharmacyService.CreateOrderForPharmacy(dto);
-            return Created($"api/pharmacy/{id}", null);
+            return Created($"api/orderforpharmacy/{id}", null);
         }
-        //put zamówienia do swojej apteki po id
-        /*
-        [HttpPut]
-        [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult UpdateOrderForPharmacy([FromBody] UpdateOrderForPharmacyDto dto)
-        {
-            _orderForPharmacyService.Update(dto);
-            return Ok();
-        }
-        */
+
         [HttpPatch("{id}")]
         public ActionResult UpdateByPatch([FromBody] JsonPatchDocument<OrderForPharmacy> orderForPharmacyPatchModel, [FromRoute] int id)
         {

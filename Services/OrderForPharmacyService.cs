@@ -45,9 +45,9 @@ namespace MyPharmacy.Services
                 .OrderForPharmacies
                 .Include(o => o.Drugs)
                 .AsNoTracking()
-                .FirstOrDefault();
+                .FirstOrDefault(o => o.Id == id);
 
-            if (orderForPharmacy != null)
+            if (orderForPharmacy is null)
                 throw new NotFoundException($"Order with id: {id} not found");
 
             if (orderForPharmacy.PharmacyId != _userContextService.PharmacyId)
@@ -62,11 +62,11 @@ namespace MyPharmacy.Services
             var ordersForPharmacy = _dbContext
                 .OrderForPharmacies
                 .Include(o => o.Drugs)
+                .ThenInclude(d => d.DrugInformation)
                 .Include(o => o.Status)
                 .Include(o => o.User)
                 .Where(o => o.PharmacyId == _userContextService.PharmacyId && ( query.year == null || o.DateOfOrder.Year == query.year))
                 .AsNoTracking();
-                //.Where(d => query.Phrase == null || (d.Address.City.ToLower().Contains(query.Phrase.ToLower()) || d.Name.ToLower().Contains(query.Phrase.ToLower())));
 
             var selector = new Dictionary<string, Expression<Func<OrderForPharmacy, object>>>
             {
@@ -102,7 +102,6 @@ namespace MyPharmacy.Services
                 .First(s => s.Name == dto.StatusName); //do walidatora sprawdzanie 
 
             orderForPharmacy.PharmacyId = (int)_userContextService.PharmacyId;
-            //orderForPharmacy.StatusId = status.Id;
             orderForPharmacy.Status = status;
             orderForPharmacy.DateOfOrder = DateTime.Now;
             orderForPharmacy.OrderDescription = dto.OrderDescription;
@@ -149,7 +148,6 @@ namespace MyPharmacy.Services
 
             if (order != null)
             {
-                //if (dateOfReceipt == null)
                 if(!dateOfReceipt.HasValue)
                 {
                     order.DateOfReceipt = DateTime.Now;
@@ -173,7 +171,7 @@ namespace MyPharmacy.Services
             }
         }
 
-        public void AddDrugToOrder(int id, AddDrugToOrderDto dto) //zrobić sprawdzanie
+        public void AddDrugToOrder(int id, AddDrugToOrderDto dto)
         {
             var order = _dbContext.OrderForPharmacies
                 .Include(d => d.Drugs)
@@ -192,7 +190,6 @@ namespace MyPharmacy.Services
 
                 if (drug != null)
                 {
-                    //Także odejmuje
                     if(drug.AmountOfPackages - dto.AmountOfPackages < 0)
                     {
                         drug.AmountOfPackages += dto.AmountOfPackages;

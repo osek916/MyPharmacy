@@ -13,9 +13,11 @@ using MyPharmacy.Entities;
 using MyPharmacy.Middleware;
 using MyPharmacy.Models;
 using MyPharmacy.Models.OrderForPharmacyDtos;
+using MyPharmacy.Models.Queries;
 using MyPharmacy.Models.UserDtos;
 using MyPharmacy.Models.Validators;
 using MyPharmacy.Models.Validators.DrugInformation;
+using MyPharmacy.Models.Validators.OrderByClient;
 using MyPharmacy.Models.Validators.OrderForPharmacy;
 using MyPharmacy.Models.Validators.Pharmacy;
 using MyPharmacy.Models.Validators.SearchEngine;
@@ -95,6 +97,8 @@ namespace MyPharmacy
             services.AddScoped<IValidator<GetAllDrugInformationQuery>, GetAllDrugInformationQueryValidator>();
             services.AddScoped<IValidator<PharmacyGetAllQuery>, PharmacyGetAllQueryValidator>();
             services.AddScoped<IValidator<CreateOrderForPharmacyDto>, CreateOrderForPharmacyDtoValidator>();
+            services.AddScoped<IValidator<OrderForPharmacyGetAllQuery>, OrderForPharmacyGetAllQueryValidator>();
+            services.AddScoped<IValidator<OrderByClientGetAllQuery>, OrderByClientGetAllQueryValidator>();
             #endregion
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 
