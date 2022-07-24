@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyPharmacy.Entities;
 using MyPharmacy.Middleware;
 using MyPharmacy.Models;
+using MyPharmacy.Models.OrderByClientDtos;
 using MyPharmacy.Models.OrderForPharmacyDtos;
 using MyPharmacy.Models.Queries;
 using MyPharmacy.Models.UserDtos;
@@ -99,6 +100,7 @@ namespace MyPharmacy
             services.AddScoped<IValidator<CreateOrderForPharmacyDto>, CreateOrderForPharmacyDtoValidator>();
             services.AddScoped<IValidator<OrderForPharmacyGetAllQuery>, OrderForPharmacyGetAllQueryValidator>();
             services.AddScoped<IValidator<OrderByClientGetAllQuery>, OrderByClientGetAllQueryValidator>();
+            services.AddScoped<IValidator<CreateOrderByClientDto>, CreateOrderByClientDtoValidator>();
             #endregion
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();//allows injection to constructor UserContextService => IHttpContextAccessor 

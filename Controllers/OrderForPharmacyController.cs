@@ -53,7 +53,7 @@ namespace MyPharmacy.Controllers
 
         [HttpPut("status/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]
-        public ActionResult UpdateStatusOfOrder([FromRoute] int id,  [FromBody]string status)
+        public ActionResult UpdateStatusOfOrder([FromRoute] int id,  [FromBody] string status)
         {
             _orderForPharmacyService.UpdateStatusOfOrder(id, status);
             return Ok();

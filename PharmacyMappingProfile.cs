@@ -3,12 +3,15 @@ using MyPharmacy.Entities;
 using MyPharmacy.Models;
 using MyPharmacy.Models.OrderByClientDtos;
 using MyPharmacy.Models.OrderForPharmacyDtos;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MyPharmacy
 {
     public class PharmacyMappingProfile : Profile
     {
-        public PharmacyMappingProfile()
+        private readonly PharmacyDbContext _dbContext;
+        public PharmacyMappingProfile(PharmacyDbContext dbContext)
         {
             //mapping from --> to
             CreateMap<Pharmacy, PharmacyDto>()
@@ -46,16 +49,17 @@ namespace MyPharmacy
                 .ForMember(d => d.Description, dd => dd.MapFrom(g => g.Description));
 
             CreateMap<Pharmacy, SearchEngineDrugDto>();
+
             CreateMap<Drug, SearchEngineDrugDto>()
-                .ForMember(d => d.City, dd => dd.MapFrom(g => g.Pharmacy.Address.City))
-                .ForMember(d => d.Street, dd => dd.MapFrom(g => g.Pharmacy.Address.Street))
-                .ForMember(d => d.PostalCode, dd => dd.MapFrom(g => g.Pharmacy.Address.PostalCode))
-                .ForMember(d => d.SubstancesName, dd => dd.MapFrom(g => g.DrugInformation.SubstancesName))
-                .ForMember(d => d.DrugsName, dd => dd.MapFrom(g => g.DrugInformation.DrugsName))
-                .ForMember(d => d.LumpSumDrug, dd => dd.MapFrom(g => g.DrugInformation.LumpSumDrug))
-                .ForMember(d => d.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired))
-                .ForMember(d => d.MilligramsPerTablets, dd => dd.MapFrom(g => g.DrugInformation.MilligramsPerTablets))
-                .ForMember(d => d.NumberOfTablets, dd => dd.MapFrom(g => g.DrugInformation.NumberOfTablets));
+                .ForMember(s => s.City, dd => dd.MapFrom(g => g.Pharmacy.Address.City))
+                .ForMember(s => s.Street, dd => dd.MapFrom(g => g.Pharmacy.Address.Street))
+                .ForMember(s => s.PostalCode, dd => dd.MapFrom(g => g.Pharmacy.Address.PostalCode))
+                .ForMember(s => s.SubstancesName, dd => dd.MapFrom(g => g.DrugInformation.SubstancesName))
+                .ForMember(s => s.DrugsName, dd => dd.MapFrom(g => g.DrugInformation.DrugsName))
+                .ForMember(s => s.LumpSumDrug, dd => dd.MapFrom(g => g.DrugInformation.LumpSumDrug))
+                .ForMember(s => s.PrescriptionRequired, dd => dd.MapFrom(g => g.DrugInformation.PrescriptionRequired))
+                .ForMember(s => s.MilligramsPerTablets, dd => dd.MapFrom(g => g.DrugInformation.MilligramsPerTablets))
+                .ForMember(s => s.NumberOfTablets, dd => dd.MapFrom(g => g.DrugInformation.NumberOfTablets));
 
             CreateMap<DrugInformation, DrugInformationDto>();
 
@@ -76,6 +80,18 @@ namespace MyPharmacy
             CreateMap<CreateOrderForPharmacyDrugDto, Drug>();
 
             CreateMap<OrderByClient, OrderByClientDto>();
+
+            /*CreateMap<OrderByClient, CreateOrderByClientDto>()
+                .ForMember(dto => dto.IsPersonalPickup, oo => oo.MapFrom(order => order.IsPersonalPickup))
+                .ForMember(dto => dto.DrugDtos, 
+                oo => oo.MapFrom(order => order.Drugs = new List<Drug>(order.)))
+
+            CreateMap<Drug, CreateOrderByClientDrugDto>()
+                .ForMember(dto => dto.MilligramsPerTablets, 
+                ss => ss.MapFrom(order => order.DrugInformationId 
+                = _dbContext.DrugInformations.First(d => d.DrugsName == order.DrugInformation.DrugsName
+                 ).Id) */
+
         }
     }
 }

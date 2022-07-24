@@ -13,7 +13,7 @@ namespace MyPharmacy.Models.Validators.OrderForPharmacy
     {
         public CreateOrderForPharmacyDtoValidator(PharmacyDbContext dbContext)
         {
-            var drugInformationExist = dbContext.DrugInformations;
+            var drugInformationExist = dbContext.DrugInformations.AsNoTracking();
             RuleFor(x => x.StatusName)
                 .Custom((value, context) =>
                 {

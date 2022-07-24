@@ -132,7 +132,7 @@ namespace MyPharmacy.Services
                 }
                 else
                 {
-                    throw new BadRequestException($"The given status is invalid");
+                    throw new BadRequestException($"The given status {status} is invalid");
                 }
             }
             else

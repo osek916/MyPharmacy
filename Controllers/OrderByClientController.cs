@@ -4,6 +4,7 @@ using MyPharmacy.Models;
 using MyPharmacy.Models.OrderByClientDtos;
 using MyPharmacy.Models.Queries;
 using MyPharmacy.Services;
+using System;
 
 namespace MyPharmacy.Controllers
 {
@@ -35,14 +36,14 @@ namespace MyPharmacy.Controllers
             return orderByClientDto;
         }
         */
-        [HttpGet()]
+        [HttpGet]
         [Authorize(Roles = "User")]
         public ActionResult<PagedResult<OrderByClientDto>> GetAll([FromQuery] OrderByClientGetAllQuery query)
         {
             var orderByClientDto = _orderByClientService.GetAll(query);
             return orderByClientDto;
         }
-
+        
         [HttpPost]
         [Authorize(Roles = "User")]
         public ActionResult CreateOrderByClient([FromBody] CreateOrderByClientDto dto)
@@ -51,6 +52,27 @@ namespace MyPharmacy.Controllers
             return Created($"api/orderbyclient/{id}", null);
         }
 
-        
+        [HttpPut("status/{id}")]
+        [Authorize(Roles = "Manager, Pharmacist")]
+        public ActionResult UpdateStatusOfOrder([FromRoute] int id, [FromBody] string status)
+        {
+            _orderByClientService.UpdateStatusOfOrder(id, status);
+            return Ok();
+        }
+
+        [HttpPut("dateofreceipt/{id}")]
+        [Authorize(Roles = "Manager, Pharmacist")]
+        public ActionResult UpdateDateOfReceipt([FromRoute] int id, [FromBody] DateTime? dt)
+        {
+            _orderByClientService.UpdateDateOfReceipt(id, dt);
+            return Ok();
+        }
+        /*
+        [HttpDelete("{id}")]
+        public ActionResult DeleteById([FromRoute] int id)
+        {
+            _orderByClientService.DeleteById(id);
+            return NoContent();
+        }*/
     }
 }

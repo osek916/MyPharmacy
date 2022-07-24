@@ -18,7 +18,9 @@ namespace MyPharmacy.Services
     {
         OrderByClientDto GetOneByNumberOfOrder(int NumberOfOrder);
         PagedResult<OrderByClientDto> GetAll(OrderByClientGetAllQuery query);
-        //int CreateOrderByClient(CreateOrderByClientDto dto);
+        int CreateOrderByClient(CreateOrderByClientDto dto);
+        void UpdateStatusOfOrder(int id, string status);
+        void UpdateDateOfReceipt(int id, DateTime? dateOfReceipt);
     }
     public class OrderByClientService : IOrderByClientService
     {
@@ -82,7 +84,72 @@ namespace MyPharmacy.Services
 
             return result;
         }
+        /*
+        public int CreateOrderByClient(CreateOrderByClientDto dto)
+        {
+            var drugInformations = _dbContext.DrugInformations;
+            foreach (var item in dto.DrugDtos)
+            {
+                drugInformationId = drugInformations.First(d => d.)
+            }
+        }*/
 
-        
+        public void UpdateStatusOfOrder(int id, string status)
+        {
+            var dbStatus = _dbContext.Statuses.AsNoTracking()
+                .FirstOrDefault(s => s.Name == status);
+
+            var order = _dbContext.OrderByClients
+                .FirstOrDefault(c => c.Id == id);
+
+            if (dbStatus != null)
+            {
+                if (order is null)
+                    throw new NotFoundException("Order not found");
+
+                if (order.PharmacyId != _userContextService.PharmacyId)
+                    throw new ForbiddenException("You are not authorized to update this order");
+            }
+            else
+            {
+                throw new BadRequestException($"The given status {status} is invalid");
+            }
+
+            order.StatusId = dbStatus.Id;
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateDateOfReceipt(int id, DateTime? dateOfReceipt)
+        {
+            var order = _dbContext.OrderByClients.FirstOrDefault(o => o.Id == id
+            && o.PharmacyId == _userContextService.PharmacyId);
+
+            if (order != null)
+            {
+                if (!dateOfReceipt.HasValue)
+                {
+                    order.DateOfReceipt = DateTime.Now;
+                }
+                else
+                {
+                    if (order.DateOfOrder <= dateOfReceipt)
+                    {
+                        order.DateOfReceipt = dateOfReceipt;
+                    }
+                    else
+                    {
+                        throw new BadRequestException($"Date of order must be less than date of receipt");
+                    }
+                }
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                throw new NotFoundException($"Order not found");
+            }
+        }
+
+
+
     }
 }

@@ -6,5 +6,6 @@ namespace MyPharmacy.Models.OrderByClientDtos
     {
         public bool IsPersonalPickup { get; set; }       
         public virtual List<CreateOrderByClientDrugDto> DrugDtos { get; set; }
+        public int? PharmacyId { get; set; }
     }
 }
