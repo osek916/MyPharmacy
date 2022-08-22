@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MyPharmacy.Authorization;
 using MyPharmacy.Entities;
 using MyPharmacy.Middleware;
 using MyPharmacy.Models;
@@ -113,12 +114,18 @@ namespace MyPharmacy
                     builder.AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:8080")
-
                 );
             });
             
             //services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=PharmacyDb;Trusted_Connection=True;"));
             services.AddDbContext<PharmacyDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Server = (localdb)\\mssqllocaldb; Database = PharmacyDb; Trusted_Connection = True; ")));
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasAPharmacy", builder => builder.AddRequirements(new HasAPharmacyRequirement(true)));
+                options.AddPolicy("Is15YearsOld", builder => builder.AddRequirements(new AgeOfTheUserRequirement(15)));
+            });
+        
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PharmacySeeder seeder)
