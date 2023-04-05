@@ -44,13 +44,14 @@ namespace MyPharmacy.Controllers
             return orderByClientDto;
         }
         
+        /*
         [HttpPost]
         [Authorize(Roles = "User")]
         public ActionResult CreateOrderByClient([FromBody] CreateOrderByClientDto dto)
         {
             var id = _orderByClientService.CreateOrderByClient(dto);
             return Created($"api/orderbyclient/{id}", null);
-        }
+        }*/
 
         [HttpPut("status/{id}")]
         [Authorize(Roles = "Manager, Pharmacist")]

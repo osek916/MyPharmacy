@@ -18,7 +18,7 @@ namespace MyPharmacy.Services
     {
         OrderByClientDto GetOneByNumberOfOrder(int NumberOfOrder);
         PagedResult<OrderByClientDto> GetAll(OrderByClientGetAllQuery query);
-        int CreateOrderByClient(CreateOrderByClientDto dto);
+        //int CreateOrderByClient(CreateOrderByClientDto dto);
         void UpdateStatusOfOrder(int id, string status);
         void UpdateDateOfReceipt(int id, DateTime? dateOfReceipt);
     }
@@ -149,7 +149,9 @@ namespace MyPharmacy.Services
             }
         }
 
-
-
+        //public int CreateOrderByClient(CreateOrderByClientDto dto)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

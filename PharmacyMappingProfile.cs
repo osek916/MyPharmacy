@@ -10,8 +10,7 @@ namespace MyPharmacy
 {
     public class PharmacyMappingProfile : Profile
     {
-        private readonly PharmacyDbContext _dbContext;
-        public PharmacyMappingProfile(PharmacyDbContext dbContext)
+        public PharmacyMappingProfile()
         {
             //mapping from --> to
             CreateMap<Pharmacy, PharmacyDto>()
